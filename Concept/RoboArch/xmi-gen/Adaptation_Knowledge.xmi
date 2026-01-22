@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="ASCII"?>
+<robochart:RCPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart" name="Adaptation_Knowledge">
+  <imports importedNamespace="Types::*"/>
+  <machines name="Adaptation_Knowledge">
+    <interfaces href="Types.xmi#//@interfaces.5"/>
+    <interfaces href="Types.xmi#//@interfaces.15"/>
+    <interfaces href="Types.xmi#//@interfaces.25"/>
+    <interfaces href="Types.xmi#//@interfaces.14"/>
+    <interfaces href="Types.xmi#//@interfaces.13"/>
+    <interfaces href="Types.xmi#//@interfaces.23"/>
+    <interfaces href="Types.xmi#//@interfaces.20"/>
+    <interfaces href="Types.xmi#//@interfaces.2"/>
+    <interfaces href="Types.xmi#//@interfaces.8"/>
+    <interfaces href="Types.xmi#//@interfaces.22"/>
+    <interfaces href="Types.xmi#//@interfaces.29"/>
+    <interfaces href="Types.xmi#//@interfaces.6"/>
+    <interfaces href="Types.xmi#//@interfaces.9"/>
+    <interfaces href="Types.xmi#//@interfaces.7"/>
+    <interfaces href="Types.xmi#//@interfaces.30"/>
+    <interfaces href="Types.xmi#//@interfaces.26"/>
+    <interfaces href="Types.xmi#//@interfaces.19"/>
+    <interfaces href="Types.xmi#//@interfaces.16"/>
+    <interfaces href="Types.xmi#//@interfaces.17"/>
+    <interfaces href="Types.xmi#//@interfaces.3"/>
+    <interfaces href="Types.xmi#//@interfaces.18"/>
+    <interfaces href="Types.xmi#//@interfaces.24"/>
+    <interfaces href="Types.xmi#//@interfaces.10"/>
+    <interfaces href="Types.xmi#//@interfaces.27"/>
+    <nodes xsi:type="robochart:Initial" name="i0"/>
+    <nodes xsi:type="robochart:State" name="Knowledge"/>
+    <transitions name="t0" source="//@machines.0/@nodes.0" target="//@machines.0/@nodes.1"/>
+    <transitions name="laserScans_get_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.13/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.13/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.5/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="laserScans_set_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger _type="INPUT">
+        <event href="Types.xmi#//@interfaces.23/@events.0"/>
+        <parameter href="Types.xmi#//@interfaces.5/@variableList.0/@vars.0"/>
+      </trigger>
+    </transitions>
+    <transitions name="laserScans_ext_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.20/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.20/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.5/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="laserScans_get_Analyse_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.2/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.2/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.5/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="laserScans_get_Plan_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.8/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.8/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.5/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="laserScans_get_Legitimate_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.22/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.22/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.5/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="plannedLidarMask_get_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.29/@events.3"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.29/@events.2"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.1/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="plannedLidarMask_set_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger _type="INPUT">
+        <event href="Types.xmi#//@interfaces.6/@events.1"/>
+        <parameter href="Types.xmi#//@interfaces.15/@variableList.1/@vars.0"/>
+      </trigger>
+    </transitions>
+    <transitions name="plannedLidarMask_ext_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.9/@events.3"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.9/@events.2"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.1/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="lidarMasks_get_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.29/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.29/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="lidarMasks_set_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger _type="INPUT">
+        <event href="Types.xmi#//@interfaces.6/@events.0"/>
+        <parameter href="Types.xmi#//@interfaces.15/@variableList.0/@vars.0"/>
+      </trigger>
+    </transitions>
+    <transitions name="lidarMasks_ext_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.9/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.9/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="plannedLidarMask_get_Plan_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.7/@events.3"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.7/@events.2"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.1/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="lidarMasks_get_Plan_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.7/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.7/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="plannedLidarMask_get_Legitimate_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.30/@events.3"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.30/@events.2"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.1/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="lidarMasks_get_Legitimate_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.30/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.30/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.15/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="directions_get_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.26/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.26/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.25/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="directions_set_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger _type="INPUT">
+        <event href="Types.xmi#//@interfaces.19/@events.0"/>
+        <parameter href="Types.xmi#//@interfaces.25/@variableList.0/@vars.0"/>
+      </trigger>
+    </transitions>
+    <transitions name="directions_ext_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.16/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.16/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.25/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="directions_get_Legitimate_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.17/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.17/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.25/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+    <transitions name="directions_get_Execute_trans" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.1">
+      <trigger>
+        <event href="Types.xmi#//@interfaces.3/@events.1"/>
+      </trigger>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication _type="OUTPUT">
+          <event href="Types.xmi#//@interfaces.3/@events.0"/>
+          <value xsi:type="robochart:RefExp">
+            <ref xsi:type="robochart:Variable" href="Types.xmi#//@interfaces.25/@variableList.0/@vars.0"/>
+          </value>
+        </communication>
+      </action>
+    </transitions>
+  </machines>
+</robochart:RCPackage>

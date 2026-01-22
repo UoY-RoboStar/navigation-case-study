@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart">
+  <robochart:RCPackage name="Turtlebot">
+    <imports importedNamespace="Adaptation::*"/>
+    <imports importedNamespace="Control::*"/>
+    <imports importedNamespace="Types::*"/>
+    <modules name="Turtlebot">
+      <connections from="/0/@modules.0/@nodes.2" to="/0/@modules.0/@nodes.1" async="true">
+        <efrom href="Types.xmi#//@interfaces.0/@events.0"/>
+        <eto href="Types.xmi#//@interfaces.0/@events.0"/>
+      </connections>
+      <connections from="/0/@modules.0/@nodes.1" to="/0/@modules.0/@nodes.0" async="true">
+        <efrom href="Control.xmi#//@controllers.0/@events.1"/>
+        <eto href="Adaptation.xmi#//@controllers.0/@events.0"/>
+      </connections>
+      <connections from="/0/@modules.0/@nodes.0" to="/0/@modules.0/@nodes.1" async="true">
+        <efrom href="Adaptation.xmi#//@controllers.0/@events.1"/>
+        <eto href="Control.xmi#//@controllers.0/@events.0"/>
+      </connections>
+      <nodes xsi:type="robochart:ControllerRef" name="ctrl_ref0">
+        <ref href="Adaptation.xmi#//@controllers.0"/>
+      </nodes>
+      <nodes xsi:type="robochart:ControllerRef" name="ctrl_ref1">
+        <ref href="Control.xmi#//@controllers.0"/>
+      </nodes>
+      <nodes xsi:type="robochart:RoboticPlatformDef" name="Turtlebot">
+        <pInterfaces href="Types.xmi#//@interfaces.1"/>
+        <interfaces href="Types.xmi#//@interfaces.0"/>
+      </nodes>
+    </modules>
+  </robochart:RCPackage>
+  <robochart:SeqType>
+    <domain xsi:type="robochart:TypeRef">
+      <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.2"/>
+    </domain>
+  </robochart:SeqType>
+  <robochart:SeqType>
+    <domain xsi:type="robochart:TypeRef">
+      <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.3"/>
+    </domain>
+  </robochart:SeqType>
+  <robochart:TypeRef>
+    <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.3"/>
+  </robochart:TypeRef>
+  <robochart:TypeRef>
+    <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.1"/>
+  </robochart:TypeRef>
+  <robochart:TypeRef>
+    <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.2"/>
+  </robochart:TypeRef>
+</xmi:XMI>

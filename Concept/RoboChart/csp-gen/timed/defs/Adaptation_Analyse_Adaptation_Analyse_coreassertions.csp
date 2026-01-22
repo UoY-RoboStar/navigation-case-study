@@ -1,0 +1,48 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "function_toolkit_defs.csp"
+include "relation_toolkit_defs.csp"
+include "core_defs.csp"
+include "state_timed_defs.csp"
+include "Types_defs.csp"
+include "Adaptation_Analyse_Adaptation_Analyse.csp"
+include "../instantiations.csp"
+include "set_toolkit_defs.csp"
+include "core_timed_defs.csp"
+include "sequence_toolkit_defs.csp"
+include "Adaptation_Analyse_defs.csp"
+include "sequence_functions_defs.csp"
+include "robochart_defs.csp"
+
+transparent wbisim
+channel r__
+-- generate Adaptation_Analyse_Adaptation_Analyse
+P_Adaptation_Analyse_Adaptation_Analyse = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation_Analyse_Adaptation_Analyse::O__(
+		id__,
+		const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize,
+		const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold,
+		const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity,
+		const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity
+	)
+assert P_Adaptation_Analyse_Adaptation_Analyse :[deadlock-free]	
+assert P_Adaptation_Analyse_Adaptation_Analyse;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Analyse_Adaptation_Analyse :[deterministic]
+assert P_Adaptation_Analyse_Adaptation_Analyse :[divergence-free]
+-- timed deadlock free
+assert prioritise(P_Adaptation_Analyse_Adaptation_Analyse[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Adaptation_Analyse_Adaptation_Analyse

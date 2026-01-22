@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ASCII"?>
+<robochart:RCPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart" name="Types">
+  <interfaces name="Sensors">
+    <events name="lidar">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+        </domain>
+      </type>
+    </events>
+  </interfaces>
+  <interfaces name="Movement">
+    <operations name="move">
+      <parameters name="lv">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+        </type>
+      </parameters>
+      <parameters name="av">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+        </type>
+      </parameters>
+    </operations>
+    <operations name="moveToLocation">
+      <parameters name="location">
+        <type xsi:type="robochart:ProductType">
+          <types xsi:type="robochart:TypeRef">
+            <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+          </types>
+          <types xsi:type="robochart:TypeRef">
+            <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+          </types>
+        </type>
+      </parameters>
+    </operations>
+  </interfaces>
+  <interfaces name="Adaptation_RecordedData_Analyse_events">
+    <events name="laserScans_Analyse">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </type>
+    </events>
+    <events name="get_laserScans_Analyse"/>
+  </interfaces>
+  <interfaces name="Adaptation_PlanData_Execute_events">
+    <events name="directions_Execute">
+      <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+    </events>
+    <events name="get_directions_Execute"/>
+  </interfaces>
+  <interfaces name="Adaptation_InputVars">
+    <variableList>
+      <vars name="laserScan_data">
+        <type xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </vars>
+    </variableList>
+  </interfaces>
+  <interfaces name="Adaptation_RecordedData">
+    <variableList>
+      <vars name="laserScans_var">
+        <type xsi:type="robochart:SeqType">
+          <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+        </type>
+      </vars>
+    </variableList>
+  </interfaces>
+  <interfaces name="Adaptation_AnalysisResults_set_events">
+    <events name="set_lidarMasks">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.3"/>
+      </type>
+    </events>
+    <events name="set_plannedLidarMask">
+      <type xsi:type="robochart:TypeRef" ref="//@types.3"/>
+    </events>
+  </interfaces>
+  <interfaces name="Adaptation_AnalysisResults_Plan_events">
+    <events name="lidarMasks_Plan">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.3"/>
+      </type>
+    </events>
+    <events name="get_lidarMasks_Plan"/>
+    <events name="plannedLidarMask_Plan">
+      <type xsi:type="robochart:TypeRef" ref="//@types.3"/>
+    </events>
+    <events name="get_plannedLidarMask_Plan"/>
+  </interfaces>
+  <interfaces name="Adaptation_RecordedData_Plan_events">
+    <events name="laserScans_Plan">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </type>
+    </events>
+    <events name="get_laserScans_Plan"/>
+  </interfaces>
+  <interfaces name="Adaptation_AnalysisResults_ext_events">
+    <events name="lidarMasks_ext">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.3"/>
+      </type>
+    </events>
+    <events name="get_lidarMasks_ext"/>
+    <events name="plannedLidarMask_ext">
+      <type xsi:type="robochart:TypeRef" ref="//@types.3"/>
+    </events>
+    <events name="get_plannedLidarMask_ext"/>
+  </interfaces>
+  <interfaces name="Adaptation_VerificationInfo_ext_events"/>
+  <interfaces name="Adaptation_Outputs">
+    <events name="spinConfig">
+      <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+    </events>
+  </interfaces>
+  <interfaces name="Adaptation_Inputs">
+    <events name="laserScan">
+      <type xsi:type="robochart:TypeRef" ref="//@types.2"/>
+    </events>
+  </interfaces>
+  <interfaces name="Adaptation_RecordedData_events">
+    <events name="laserScans">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </type>
+    </events>
+    <events name="get_laserScans"/>
+  </interfaces>
+  <interfaces name="Adaptation_VerificationInfo"/>
+  <interfaces name="Adaptation_AnalysisResults">
+    <variableList>
+      <vars name="lidarMasks_var">
+        <type xsi:type="robochart:SeqType">
+          <domain xsi:type="robochart:TypeRef" ref="//@types.3"/>
+        </type>
+      </vars>
+    </variableList>
+    <variableList>
+      <vars name="plannedLidarMask_var">
+        <type xsi:type="robochart:TypeRef" ref="//@types.3"/>
+      </vars>
+    </variableList>
+  </interfaces>
+  <interfaces name="Adaptation_PlanData_ext_events">
+    <events name="directions_ext">
+      <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+    </events>
+    <events name="get_directions_ext"/>
+  </interfaces>
+  <interfaces name="Adaptation_PlanData_Legitimate_events">
+    <events name="directions_Legitimate">
+      <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+    </events>
+    <events name="get_directions_Legitimate"/>
+  </interfaces>
+  <interfaces name="Adaptation_VerificationInfo_events"/>
+  <interfaces name="Adaptation_PlanData_set_events">
+    <events name="set_directions">
+      <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+    </events>
+  </interfaces>
+  <interfaces name="Adaptation_RecordedData_ext_events">
+    <events name="laserScans_ext">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </type>
+    </events>
+    <events name="get_laserScans_ext"/>
+  </interfaces>
+  <interfaces name="IAdaptation"/>
+  <interfaces name="Adaptation_RecordedData_Legitimate_events">
+    <events name="laserScans_Legitimate">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </type>
+    </events>
+    <events name="get_laserScans_Legitimate"/>
+  </interfaces>
+  <interfaces name="Adaptation_RecordedData_set_events">
+    <events name="set_laserScans">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.2"/>
+      </type>
+    </events>
+  </interfaces>
+  <interfaces name="Adaptation_VerificationInfo_set_events"/>
+  <interfaces name="Adaptation_PlanData">
+    <variableList>
+      <vars name="directions_var">
+        <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+      </vars>
+    </variableList>
+  </interfaces>
+  <interfaces name="Adaptation_PlanData_events">
+    <events name="directions">
+      <type xsi:type="robochart:TypeRef" ref="//@types.1"/>
+    </events>
+    <events name="get_directions"/>
+  </interfaces>
+  <interfaces name="Adaptation_VerificationInfo_Plan_events"/>
+  <interfaces name="Adaptation_InputFlags">
+    <variableList>
+      <vars name="laserScan_flag">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.3"/>
+        </type>
+      </vars>
+    </variableList>
+  </interfaces>
+  <interfaces name="Adaptation_AnalysisResults_events">
+    <events name="lidarMasks">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.3"/>
+      </type>
+    </events>
+    <events name="get_lidarMasks"/>
+    <events name="plannedLidarMask">
+      <type xsi:type="robochart:TypeRef" ref="//@types.3"/>
+    </events>
+    <events name="get_plannedLidarMask"/>
+  </interfaces>
+  <interfaces name="Adaptation_AnalysisResults_Legitimate_events">
+    <events name="lidarMasks_Legitimate">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.3"/>
+      </type>
+    </events>
+    <events name="get_lidarMasks_Legitimate"/>
+    <events name="plannedLidarMask_Legitimate">
+      <type xsi:type="robochart:TypeRef" ref="//@types.3"/>
+    </events>
+    <events name="get_plannedLidarMask_Legitimate"/>
+  </interfaces>
+  <types xsi:type="robochart:RecordType" name="Direction">
+    <fields name="omega">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+      </type>
+    </fields>
+    <fields name="duration">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+      </type>
+    </fields>
+  </types>
+  <types xsi:type="robochart:RecordType" name="SpinConfig">
+    <fields name="commands">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef" ref="//@types.0"/>
+      </type>
+    </fields>
+    <fields name="period">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+      </type>
+    </fields>
+  </types>
+  <types xsi:type="robochart:RecordType" name="LaserScan">
+    <fields name="angleIncrement">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+      </type>
+    </fields>
+    <fields name="ranges">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+        </domain>
+      </type>
+    </fields>
+  </types>
+  <types xsi:type="robochart:RecordType" name="BoolLidarMask">
+    <fields name="values">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.3"/>
+        </domain>
+      </type>
+    </fields>
+    <fields name="baseAngle">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+      </type>
+    </fields>
+  </types>
+  <types xsi:type="robochart:RecordType" name="ProbLidarMask">
+    <fields name="values">
+      <type xsi:type="robochart:SeqType">
+        <domain xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+        </domain>
+      </type>
+    </fields>
+    <fields name="baseAngle">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.4"/>
+      </type>
+    </fields>
+  </types>
+</robochart:RCPackage>

@@ -1,0 +1,37 @@
+package Turtlebot
+
+import Adaptation::* 
+import Control::* 
+import Types::* 
+
+
+
+
+ module Turtlebot {
+	
+	 cref ctrl_ref0 = Adaptation
+
+	 cref ctrl_ref1 = Control
+
+	 robotic platform Turtlebot {
+		
+		
+		uses Sensors
+		
+		provides Movement
+	
+	} 
+
+	
+	
+	connection Turtlebot on lidar to ctrl_ref1 on lidar ( _async ) 
+
+	connection ctrl_ref1 on laserScan to ctrl_ref0 on laserScan ( _async ) 
+
+	connection ctrl_ref0 on spinConfig to ctrl_ref1 on spinConfig ( _async ) 
+
+		 
+}
+
+
+

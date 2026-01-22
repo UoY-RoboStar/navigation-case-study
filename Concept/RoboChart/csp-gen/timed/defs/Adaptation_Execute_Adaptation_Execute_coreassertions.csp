@@ -1,0 +1,39 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "core_timed_defs.csp"
+include "Adaptation_Execute_defs.csp"
+include "core_defs.csp"
+include "state_timed_defs.csp"
+include "Adaptation_Execute_Adaptation_Execute.csp"
+include "Types_defs.csp"
+include "robochart_defs.csp"
+include "../instantiations.csp"
+
+transparent wbisim
+channel r__
+-- generate Adaptation_Execute_Adaptation_Execute
+P_Adaptation_Execute_Adaptation_Execute = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation_Execute_Adaptation_Execute::O__(
+		id__
+	)
+assert P_Adaptation_Execute_Adaptation_Execute :[deadlock-free]	
+assert P_Adaptation_Execute_Adaptation_Execute;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Execute_Adaptation_Execute :[deterministic]
+assert P_Adaptation_Execute_Adaptation_Execute :[divergence-free]
+-- timed deadlock free
+assert prioritise(P_Adaptation_Execute_Adaptation_Execute[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Adaptation_Execute_Adaptation_Execute

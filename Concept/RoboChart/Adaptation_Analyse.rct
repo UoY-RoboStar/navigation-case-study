@@ -1,0 +1,190 @@
+package Adaptation_Analyse
+
+import Types::* 
+import sequence_functions::*
+import sequence_toolkit::*
+
+stm Adaptation_Analyse { 
+	
+	 event anomalyFound
+	 event processedData : LaserScan
+	 event adaptationCompleted
+	
+	uses Adaptation_AnalysisResults_events
+	uses Adaptation_AnalysisResults_set_events
+	uses Adaptation_RecordedData_events
+	
+	uses Adaptation_AnalysisResults
+	
+	var data : LaserScan 
+	var anomalyDetected : boolean 
+	var awaitingAdaptation : boolean
+	
+	var slidingProbLidarMasks : Seq( ProbLidarMask )
+	var probLidarMask : ProbLidarMask
+	var lidarMask : BoolLidarMask
+	const slidingWindowSize : nat
+	const occlusionThreshold : real
+	const occlusionSensitivity : real
+	const replanningSensitivity : real
+
+	initial i0
+
+	state Initialise {
+	}
+
+	state WaitForData {
+	}
+
+	state AnalyseAnomaly {
+		initial i0
+		state AddToSlidingWindow {
+			entry 
+				slidingProbLidarMasks = 
+						let values == mapSeq((lambda range : real @ if (range < 12 /\ range > 0) then 1 else 0 end), data.ranges) @
+					< ProbLidarMask (| values = values, baseAngle = data.angleIncrement |) > ^ slidingProbLidarMasks
+			//entry slidingWindow = <boolToProbLidarMask(makeBoolLidarMask(data))> ^ slidingWindow
+		}
+		state ComputeProbMaskPartialWindow {
+			entry 
+				probLidarMask =
+					let addSeqs == (lambda seq1 : Seq(real), seq2 : Seq(real) @ mapSeq(lambda x : real, y : real @ x + y, zipSeqs(seq1, seq2))),
+						addLidarMasks == (lambda mask1 : ProbLidarMask , mask2 : ProbLidarMask @ ProbLidarMask(| values = addSeqs(mask1.values, mask2.values), baseAngle = mask1.baseAngle |)) @
+					foldSeq(addLidarMasks, tail(slidingProbLidarMasks), head(slidingProbLidarMasks));
+				probLidarMask = ProbLidarMask (| values = mapSeq(lambda x : real @ x/size(slidingProbLidarMasks), probLidarMask.values), baseAngle = probLidarMask.baseAngle |)
+			//entry probLidarMask = scaleLidarMask(1.0/windowSize, sumLidarMasks(slidingWindow)); slidingWindow = front(slidingWindow)
+		}
+		state ComputeProbMaskFullWindow {
+			entry 
+				probLidarMask =
+					let subSeqs == (lambda seq1 : Seq(real), seq2 : Seq(real) @ mapSeq(lambda x : real, y : real @ x - y, zipSeqs(seq1, seq2))),
+						subLidarMasks == (lambda mask1 : ProbLidarMask , mask2 : ProbLidarMask @ ProbLidarMask(| values = subSeqs(mask1.values, mask2.values), baseAngle = mask1.baseAngle |)) @
+					subLidarMasks(slidingProbLidarMasks[1], slidingProbLidarMasks[size(slidingProbLidarMasks)]);
+				probLidarMask = ProbLidarMask (| values = mapSeq(lambda x : real @ x/size(slidingProbLidarMasks), probLidarMask.values), baseAngle = probLidarMask.baseAngle |);
+				slidingProbLidarMasks = front(slidingProbLidarMasks)
+			//entry probLidarMask = scaleLidarMask(1.0/windowSize, subtractLidarMasks(slidingWindow[1], slidingWindow[size(slidingWindow)])); slidingWindow = front(slidingWindow)
+		}
+		state RotateAndWeaken {
+			entry
+				// check for values over the occlusion threshold
+				lidarMask = 
+						let values == mapSeq(lambda x : real @ x > occlusionThreshold, probLidarMask.values) @
+					BoolLidarMask (| values = values, baseAngle = probLidarMask.baseAngle |);
+				// rotate and weaken based on the occlusion sensitivity
+				lidarMask =
+						let numRotations == round(occlusionSensitivity/lidarMask.baseAngle),
+							forwardRotations == mapSeq(lambda n : int @ BoolLidarMask(| values = rotateSeq(lidarMask.values, n), baseAngle = lidarMask.baseAngle |) , range(1, numRotations)),
+							backwardRotations == mapSeq(lambda n : int @ BoolLidarMask(| values = rotateSeq(lidarMask.values, n), baseAngle = lidarMask.baseAngle |), range(numRotations, -1)),
+							orSeqs == lambda seq1 : Seq(boolean), seq2 : Seq(boolean) @ mapSeq(lambda x : boolean, y : boolean @ x \/ y, zipSeqs(seq1, seq2)),
+							orLidarMasks == (lambda mask1 : BoolLidarMask, mask2 : BoolLidarMask @ BoolLidarMask(| values = orSeqs(mask1.values, mask2.values), baseAngle = mask1.baseAngle|)),
+							andSeqs == lambda seq1 : Seq(boolean), seq2 : Seq(boolean) @ mapSeq(lambda x : boolean, y : boolean @ x /\ y, zipSeqs(seq1, seq2)),
+							andLidarMasks == (lambda mask1 : BoolLidarMask, mask2 : BoolLidarMask @ BoolLidarMask(| values = andSeqs(mask1.values, mask2.values), baseAngle = mask1.baseAngle|)),
+							weakenForward == foldSeq(orLidarMasks, forwardRotations, lidarMask),
+							weakenBackward == foldSeq(orLidarMasks, backwardRotations, weakenForward),
+							strengthenForward == foldSeq(andLidarMasks, forwardRotations, weakenBackward),
+							strengthenBackward == foldSeq(andLidarMasks, backwardRotations, strengthenForward) @
+					strengthenBackward;
+				// TODO: mask out area behind robot
+				// update lidarMasks in knowledge base
+				get_lidarMasks; lidarMasks?lidarMasks_var; set_lidarMasks!(lidarMasks_var ^ <lidarMask>)
+		}
+		state CheckForAnomaly {
+			entry get_plannedLidarMask; plannedLidarMask?plannedLidarMask_var;
+				// make a new one if we don't already have one
+				plannedLidarMask_var = if plannedLidarMask_var.baseAngle == 0
+					then BoolLidarMask (| values =  mapSeq(lambda x : real @ false, data.ranges), baseAngle = data.angleIncrement |)
+					else plannedLidarMask_var end;
+				// compare distance of masks
+				anomalyDetected =
+						let zippedValues == mapSeq(lambda x : boolean, y : boolean @ not (x iff y), zipSeqs(lidarMask.values, plannedLidarMask_var.values)),
+							numberValues == mapSeq(lambda x : boolean @ if x then real(1) else real(0) end, zippedValues),
+							distance == foldSeq(lambda x : real, y : real @ x + y, numberValues, 0) @
+							distance > replanningSensitivity;
+				if anomalyDetected /\ (not awaitingAdaptation) then set_plannedLidarMask!plannedLidarMask_var end
+		}
+		final f0
+		transition t0 {
+			from i0
+			to AddToSlidingWindow
+		}
+		transition t1 {
+			from AddToSlidingWindow
+			to ComputeProbMaskFullWindow
+			condition size(slidingProbLidarMasks) > slidingWindowSize
+		}
+		transition t2 {
+			from ComputeProbMaskPartialWindow
+			to RotateAndWeaken
+		}
+		transition t3 {
+			from ComputeProbMaskFullWindow
+			to RotateAndWeaken
+		}
+		transition t4 {
+			from AddToSlidingWindow
+			to ComputeProbMaskPartialWindow
+			condition size(slidingProbLidarMasks) <= slidingWindowSize
+		}
+		transition t5 {
+			from RotateAndWeaken
+			to CheckForAnomaly
+		}
+		transition t6 {
+			from CheckForAnomaly
+			to f0
+		}
+	}
+
+	state AnalysisComplete {
+	}
+
+	transition t0 {
+		from i0
+		to Initialise
+	}
+
+	transition t1 {
+		from Initialise
+		to WaitForData
+	}
+
+	transition t2 {
+		from WaitForData
+		to WaitForData
+		trigger adaptationCompleted 
+	  	action awaitingAdaptation = 	false  
+	
+	}
+
+	transition t3 {
+		from WaitForData
+		to AnalyseAnomaly
+		trigger processedData ? data 
+	}
+
+	transition t4 {
+		from AnalyseAnomaly
+		to AnalysisComplete
+	}
+
+	transition t5 {
+		from AnalysisComplete
+		to WaitForData
+		condition 	anomalyDetected  
+	
+	  	action anomalyFound ; awaitingAdaptation = 	true  
+	
+	}
+
+	transition t6 {
+		from AnalysisComplete
+		to WaitForData
+		condition 	not anomalyDetected  
+	
+	}
+
+	 
+} 
+
+
+

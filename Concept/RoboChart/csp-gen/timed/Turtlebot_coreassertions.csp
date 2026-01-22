@@ -1,0 +1,94 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "Turtlebot.csp"
+
+
+
+
+-- generate Turtlebot_Turtlebot
+P_Turtlebot_Turtlebot = let
+	id__ = 0
+	
+	
+	
+	const_Adaptation_Adaptation_stm_ref2_PI = const_Adaptation_Plan_Adaptation_Plan_PI
+	const_Adaptation_Adaptation_stm_ref1_slidingWindowSize = const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize
+	const_Adaptation_Adaptation_stm_ref1_occlusionThreshold = const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold
+	const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity = const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity
+	const_Adaptation_Adaptation_stm_ref1_replanningSensitivity = const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity
+		
+	
+within
+	Turtlebot::Turtlebot::O__(id__,
+			    const_Adaptation_Adaptation_stm_ref2_PI,
+			    const_Adaptation_Adaptation_stm_ref1_slidingWindowSize,
+			    const_Adaptation_Adaptation_stm_ref1_occlusionThreshold,
+			    const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity,
+			    const_Adaptation_Adaptation_stm_ref1_replanningSensitivity)
+assert P_Turtlebot_Turtlebot :[deadlock-free]	
+assert P_Turtlebot_Turtlebot;RUN({r__}) :[deadlock-free]
+assert P_Turtlebot_Turtlebot :[deterministic]
+assert P_Turtlebot_Turtlebot :[divergence-free]
+
+-- generate Turtlebot_Turtlebot_ctrl_ref0
+P_Turtlebot_Turtlebot_ctrl_ref0 = let
+	id__ = 0
+	
+	
+	
+	const_Adaptation_Adaptation_stm_ref2_PI = const_Adaptation_Plan_Adaptation_Plan_PI
+	const_Adaptation_Adaptation_stm_ref1_slidingWindowSize = const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize
+	const_Adaptation_Adaptation_stm_ref1_occlusionThreshold = const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold
+	const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity = const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity
+	const_Adaptation_Adaptation_stm_ref1_replanningSensitivity = const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity
+		
+within
+	Turtlebot::Turtlebot::ctrl_ref0::O__(id__,
+			    const_Adaptation_Adaptation_stm_ref2_PI,
+			    const_Adaptation_Adaptation_stm_ref1_slidingWindowSize,
+			    const_Adaptation_Adaptation_stm_ref1_occlusionThreshold,
+			    const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity,
+			    const_Adaptation_Adaptation_stm_ref1_replanningSensitivity)
+
+assert P_Turtlebot_Turtlebot_ctrl_ref0 :[deadlock-free]	
+assert P_Turtlebot_Turtlebot_ctrl_ref0;RUN({r__}) :[deadlock-free]
+assert P_Turtlebot_Turtlebot_ctrl_ref0 :[deterministic]
+assert P_Turtlebot_Turtlebot_ctrl_ref0 :[divergence-free]
+
+-- timed deadlock free
+assert prioritise(P_Turtlebot_Turtlebot_ctrl_ref0[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Turtlebot_Turtlebot_ctrl_ref0
+-- generate Turtlebot_Turtlebot_ctrl_ref1
+P_Turtlebot_Turtlebot_ctrl_ref1 = let
+	id__ = 0
+	
+	
+	
+		
+within
+	Turtlebot::Turtlebot::ctrl_ref1::O__(id__)
+
+assert P_Turtlebot_Turtlebot_ctrl_ref1 :[deadlock-free]	
+assert P_Turtlebot_Turtlebot_ctrl_ref1;RUN({r__}) :[deadlock-free]
+assert P_Turtlebot_Turtlebot_ctrl_ref1 :[deterministic]
+assert P_Turtlebot_Turtlebot_ctrl_ref1 :[divergence-free]
+
+-- timed deadlock free
+assert prioritise(P_Turtlebot_Turtlebot_ctrl_ref1[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Turtlebot_Turtlebot_ctrl_ref1
+-- timed deadlock free
+assert prioritise(P_Turtlebot_Turtlebot[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Turtlebot_Turtlebot

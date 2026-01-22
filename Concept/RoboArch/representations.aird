@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewpoint:DAnalysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" uid="_8UqTIJ17EfCZQs_5p7cISg" version="14.5.1.202106111100">
+  <semanticResources>platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct</semanticResources>
+  <semanticResources>platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/sequence_toolkit.rct</semanticResources>
+  <semanticResources>platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/relation_toolkit.rct</semanticResources>
+  <semanticResources>platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/set_toolkit.rct</semanticResources>
+  <semanticResources>platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/function_toolkit.rct</semanticResources>
+  <semanticResources>turtlebot.rac</semanticResources>
+  <semanticResources>platform:/plugin/circus.robocalc.roboarch.textual/lib/roboarch/reserved_types.rct</semanticResources>
+  <semanticResources>xmi-gen/Adaptation.xmi</semanticResources>
+  <semanticResources>xmi-gen/Types.xmi</semanticResources>
+  <semanticResources>xmi-gen/Adaptation_Analyse.xmi</semanticResources>
+  <semanticResources>xmi-gen/Adaptation_Knowledge.xmi</semanticResources>
+  <semanticResources>xmi-gen/Adaptation_Plan.xmi</semanticResources>
+  <semanticResources>xmi-gen/Adaptation_Monitor.xmi</semanticResources>
+  <semanticResources>xmi-gen/Adaptation_Legitimate.xmi</semanticResources>
+  <semanticResources>xmi-gen/Adaptation_Execute.xmi</semanticResources>
+  <semanticResources>xmi-gen/Control.xmi</semanticResources>
+  <semanticResources>xmi-gen/turtlebot.xmi</semanticResources>
+  <semanticResources>rct-gen/Adaptation.rct</semanticResources>
+  <semanticResources>rct-gen/Adaptation_Analyse.rct</semanticResources>
+  <semanticResources>rct-gen/Adaptation_Execute.rct</semanticResources>
+  <semanticResources>rct-gen/Adaptation_Knowledge.rct</semanticResources>
+  <semanticResources>rct-gen/Adaptation_Legitimate.rct</semanticResources>
+  <semanticResources>rct-gen/Adaptation_Monitor.rct</semanticResources>
+  <semanticResources>rct-gen/Adaptation_Plan.rct</semanticResources>
+  <semanticResources>rct-gen/Control.rct</semanticResources>
+  <semanticResources>rct-gen/Types.rct</semanticResources>
+  <semanticResources>rct-gen/turtlebot.rct</semanticResources>
+</viewpoint:DAnalysis>

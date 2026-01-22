@@ -1,0 +1,38 @@
+package Control
+
+import Turtlebot::* 
+import Types::* 
+
+
+
+
+
+controller Control {
+	
+	 event spinConfig : SpinConfig
+	 event laserScan : LaserScan
+	
+	uses Sensors
+	
+	
+	requires Movement
+
+	stm stm0 { 
+	
+		initial i0
+	
+		state s0 {
+		}
+	
+		transition i0Tos0 {
+			from i0
+			to s0
+		}
+	
+		 
+	} 
+
+} 
+
+
+

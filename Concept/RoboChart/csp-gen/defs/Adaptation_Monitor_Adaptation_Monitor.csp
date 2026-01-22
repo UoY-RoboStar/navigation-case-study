@@ -1,0 +1,878 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+module Adaptation_Monitor_Adaptation_Monitor
+exports
+	transparent diamond
+	transparent sbisim
+	transparent dbisim
+	transparent chase
+
+	-- Transition identifiers
+	-- declaring identifiers of transitions
+	datatype NIDS = 
+	              NID_i0|
+	              NID_Initialise|
+	              NID_ReadInput|
+	              NID_ProcessData|
+	              NID_RecordData|
+	              NID_j0|
+	              NID_SendData
+	
+	channel internal__ : NIDS
+	
+	-- Flow channels		
+	channel interrupt
+	channel exited
+	channel exit
+	channel terminate
+	
+	-- Variable channels
+	channel get_outputData, set_outputData, setL_outputData, setR_outputData: Types_LaserScan
+	channel get_dataToSend, set_dataToSend, setL_dataToSend, setR_dataToSend: core_boolean
+	channel get_laserScan_data, set_laserScan_data, setL_laserScan_data, setR_laserScan_data: Types_LaserScan
+	channel get_laserScan_flag, set_laserScan_flag, setL_laserScan_flag, setR_laserScan_flag: core_boolean
+	channel get_laserScans_var, set_laserScans_var, setL_laserScans_var, setR_laserScans_var: LSeq(Types_LaserScan,2)
+	
+	-- Shared variable channels
+	
+	-- Local variable channels for defined operations that are required by the state machine
+	
+	-- Declaring state machine events
+	channel processedData__: NIDS.InOut.Types_LaserScan
+	channel processedData: InOut.Types_LaserScan
+	channel laserScan__: NIDS.InOut.Types_LaserScan
+	channel laserScan: InOut.Types_LaserScan
+	channel laserScans__: NIDS.InOut.LSeq(Types_LaserScan,2)
+	channel laserScans: InOut.LSeq(Types_LaserScan,2)
+	channel get_laserScans__: NIDS.InOut
+	channel get_laserScans: InOut
+	channel set_laserScans__: NIDS.InOut.LSeq(Types_LaserScan,2)
+	channel set_laserScans: InOut.LSeq(Types_LaserScan,2)
+	
+	-- Declaring call and ret events for undefined operations
+	
+	enterSS = {|
+	i0::enter,
+	Initialise::enter,
+	ReadInput::enter,
+	ProcessData::enter,
+	RecordData::enter,
+	j0::enter,
+	SendData::enter
+	|}
+	
+	enteredSS = 	{|
+	Initialise::entered,
+	ReadInput::entered,
+	ProcessData::entered,
+	RecordData::entered,
+	SendData::entered
+	|}
+	
+	internal_events = union(enteredSS,union(enterSS,{|interrupt,exited|}))
+	
+	shared_variable_events = {|
+	|}
+	
+	-- channel set with all visible events
+	sem__events = {|
+		terminate
+	,	processedData,
+		laserScan,
+		laserScans,
+		get_laserScans,
+		set_laserScans
+		|}
+
+	-- Nodes --
+	-- declaring all nodes
+	
+	----------------------------------------------------------------------
+	-- Initial: i0
+	module i0
+	exports
+	
+		channel enter, interrupt
+		
+		D__(id__) = 
+			dbisim(let
+				Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+				
+				Termination = terminate -> SKIP
+				
+				Active 		= share__choice(interrupt -> SKIP) ; Inactive
+			within
+				Inactive [| {terminate} |> SKIP)
+		
+		VS_O__(id__) = D__(id__)
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	
+	----------------------------------------------------------------------
+	-- State: Initialise
+	module Initialise
+	
+	enterSS = {}
+	
+	enteredSS = {}
+	
+	exports
+	
+		--  Declarations
+		
+		channel enter, entered, interrupt
+		channel enteredL, enteredR
+		
+						
+		
+		--	Nodes
+		-- declaring all nodes
+		
+		
+		--	Rule: behaviours(Node)
+		--  Note that FDR has problems with efficiently compiling the process below
+		-- 	if using a different recursion pattern.
+		D__(id__) = 
+		dbisim(let
+			-- IMPLEMENTATION NOTE: 
+			-- The following should be defined as: Inactive = share__choice(Activation [] Termination),
+			-- however FDR struggles with that form in certain cases. So we use the exception operator
+			-- instead to 'terminate'.
+			
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= SKIP ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+			
+		VS_O__(id__) = 
+		dbisim(let
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= SKIP ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+		
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	
+	----------------------------------------------------------------------
+	-- State: ReadInput
+	module ReadInput
+	
+	enterSS = {}
+	
+	enteredSS = {}
+	
+	exports
+	
+		--  Declarations
+		
+		channel enter, entered, interrupt
+		channel enteredL, enteredR
+		
+						
+		
+		--	Nodes
+		-- declaring all nodes
+		
+		
+		--	Rule: behaviours(Node)
+		--  Note that FDR has problems with efficiently compiling the process below
+		-- 	if using a different recursion pattern.
+		D__(id__) = 
+		dbisim(let
+			-- IMPLEMENTATION NOTE: 
+			-- The following should be defined as: Inactive = share__choice(Activation [] Termination),
+			-- however FDR struggles with that form in certain cases. So we use the exception operator
+			-- instead to 'terminate'.
+			
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= SKIP ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+			
+		VS_O__(id__) = 
+		dbisim(let
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= SKIP ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+		
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	
+	----------------------------------------------------------------------
+	-- State: ProcessData
+	module ProcessData
+	
+	enterSS = {}
+	
+	enteredSS = {}
+	
+	exports
+	
+		--  Declarations
+		
+		channel enter, entered, interrupt
+		channel enteredL, enteredR
+		
+						
+		
+		--	Nodes
+		-- declaring all nodes
+		
+		
+		--	Rule: behaviours(Node)
+		--  Note that FDR has problems with efficiently compiling the process below
+		-- 	if using a different recursion pattern.
+		D__(id__) = 
+		dbisim(let
+			-- IMPLEMENTATION NOTE: 
+			-- The following should be defined as: Inactive = share__choice(Activation [] Termination),
+			-- however FDR struggles with that form in certain cases. So we use the exception operator
+			-- instead to 'terminate'.
+			
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= share__choice(share__choice(get_laserScan_data?laserScan_data -> true & (share__choice(set_outputData!laserScan_data -> SKIP))));share__choice(true & (share__choice(set_dataToSend!true -> SKIP))) ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+			
+		VS_O__(id__) = 
+		dbisim(let
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= share__choice(share__choice(get_laserScan_data?laserScan_data -> true & (share__choice(set_outputData!laserScan_data -> SKIP))));share__choice(true & (share__choice(set_dataToSend!true -> SKIP))) ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+		
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	
+	----------------------------------------------------------------------
+	-- State: RecordData
+	module RecordData
+	
+	enterSS = {}
+	
+	enteredSS = {}
+	
+	exports
+	
+		--  Declarations
+		
+		channel enter, entered, interrupt
+		channel enteredL, enteredR
+		
+						
+		
+		--	Nodes
+		-- declaring all nodes
+		
+		
+		--	Rule: behaviours(Node)
+		--  Note that FDR has problems with efficiently compiling the process below
+		-- 	if using a different recursion pattern.
+		D__(id__) = 
+		dbisim(let
+			-- IMPLEMENTATION NOTE: 
+			-- The following should be defined as: Inactive = share__choice(Activation [] Termination),
+			-- however FDR struggles with that form in certain cases. So we use the exception operator
+			-- instead to 'terminate'.
+			
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= true&(share__choice(get_laserScans.out -> SKIP));true&(share__choice(laserScans.in?laserScans_var -> (SStop /\ set_laserScans_var!laserScans_var -> SKIP)));share__choice(get_laserScan_data?laserScan_data -> share__choice(get_laserScans_var?laserScans_var -> true&(share__choice(set_laserScans.out!((laserScans_var ^ <laserScan_data>)) -> SKIP)))) ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+			
+		VS_O__(id__) = 
+		dbisim(let
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= true&(share__choice(get_laserScans.out -> SKIP));true&(share__choice(laserScans.in?laserScans_var -> (SStop /\ set_laserScans_var!laserScans_var -> SKIP)));share__choice(get_laserScan_data?laserScan_data -> share__choice(get_laserScans_var?laserScans_var -> true&(share__choice(set_laserScans.out!((laserScans_var ^ <laserScan_data>)) -> SKIP)))) ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+		
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	
+	----------------------------------------------------------------------
+	-- Junction: j0
+	module j0
+	exports
+	
+		channel enter, interrupt
+		
+		D__(id__) = 
+			dbisim(let
+				Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+				
+				Active 		= share__choice(interrupt -> SKIP) ; Inactive
+			within
+				Inactive [| {terminate} |> SKIP)
+			
+		VS_O__(id__) = D__(id__)
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	
+	----------------------------------------------------------------------
+	-- State: SendData
+	module SendData
+	
+	enterSS = {}
+	
+	enteredSS = {}
+	
+	exports
+	
+		--  Declarations
+		
+		channel enter, entered, interrupt
+		channel enteredL, enteredR
+		
+						
+		
+		--	Nodes
+		-- declaring all nodes
+		
+		
+		--	Rule: behaviours(Node)
+		--  Note that FDR has problems with efficiently compiling the process below
+		-- 	if using a different recursion pattern.
+		D__(id__) = 
+		dbisim(let
+			-- IMPLEMENTATION NOTE: 
+			-- The following should be defined as: Inactive = share__choice(Activation [] Termination),
+			-- however FDR struggles with that form in certain cases. So we use the exception operator
+			-- instead to 'terminate'.
+			
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= SKIP ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+			
+		VS_O__(id__) = 
+		dbisim(let
+			Inactive 	= share__choice(enter -> SKIP [] terminate -> SKIP) ; Active
+			
+			Termination = terminate -> SKIP
+			
+			Active 		= SKIP ; 
+					 	  Behaviour ; 
+					 	  share__choice(exit -> SKIP) ; SKIP ; 
+					 	  share__choice(exited -> SKIP) ; Inactive
+		
+			Behaviour 	= entered -> During
+			During 		= ((SKIP ; SStop) /\ interrupt -> SKIP)
+		within
+			Inactive [| {terminate} |> SKIP)
+		
+	
+	endmodule
+	----------------------------------------------------------------------
+	
+	-- END of Nodes --
+	
+	-- Operation calls --
+	-- Only the undefined operations are declared here.
+	-- If the state machine is in isolation, all required operations will be undefined.
+	-- If it is in the context of a controller, the required operations not provided by the
+	-- controller will be declared here, and the defined operations will be defined in the
+	-- context of the Controller module, and therefore within scope of the state machine module.
+	
+	-- END of Operation calls --
+	
+	-- STM processes
+	STM(id__) = -- RULE: [[stm:StateMachineDef]]_STM^nops : CSPProcess
+	( 
+		(
+			(
+				(IteratedStateful(id__) \ {terminate} ; share__choice(terminate -> SKIP))
+			 	[[ share__ <- x__ | x__ <- {||} ]]
+			)
+		[| {share__} |]
+		SKIP
+		)
+		[| union(sharedVarSync,{terminate}) |]
+		dbisim(sharedVarMemory(id__))
+	)\sharedVarHide
+	
+	STM_VS_O(id__) = -- RULE: [[stm:StateMachineDef]]_STM^nops : CSPProcess
+	( 
+		(
+			(
+				(IteratedStateful_VS_O(id__) \ {terminate} ; share__choice(terminate -> SKIP))
+			 	[[ share__ <- x__ | x__ <- {||} ]]
+			)
+		[| {share__} |]
+		SKIP
+		)
+		[| union(sharedVarSync,{terminate}) |]
+		dbisim(sharedVarMemory(id__))
+	)\sharedVarHide
+	
+	-- Transitions
+	Transitions(id__) = ((let
+		Trans = share__choice(get_dataToSend?dataToSend -> (
+			((share__ -> SKIP
+			 [] dbisim((true)&(internal__!NID_i0 -> SKIP ;  ((SKIP ; Initialise::enter -> SKIP))))
+			 	 [] dbisim((true)&(internal__!NID_Initialise -> SKIP ;  share__choice(exit -> SKIP) ; (share__choice(exited -> SKIP) ; SKIP ; ReadInput::enter -> SKIP)))
+			 	 [] dbisim((true)&(laserScan__!NID_ReadInput.in?laserScan_data:{laserScan_data|laserScan_data <- Types_LaserScan, true} -> share__choice(set_laserScan_data!laserScan_data -> SKIP) ;  share__choice(exit -> SKIP) ; (share__choice(exited -> SKIP) ; share__choice(true & (share__choice(set_laserScan_flag!true -> SKIP))) ; ProcessData::enter -> SKIP)))
+			 	 [] dbisim((true)&(internal__!NID_ProcessData -> SKIP ;  share__choice(exit -> SKIP) ; (share__choice(exited -> SKIP) ; SKIP ; RecordData::enter -> SKIP)))
+			 	 [] dbisim((true)&(internal__!NID_RecordData -> SKIP ;  share__choice(exit -> SKIP) ; (share__choice(exited -> SKIP) ; SKIP ; j0::enter -> SKIP)))
+			 	 [] dbisim((dataToSend)&(internal__!NID_j0 -> SKIP ;  ((SKIP ; SendData::enter -> SKIP))))
+			 	 [] dbisim(((not (dataToSend)))&(internal__!NID_j0 -> SKIP ;  ((SKIP ; ReadInput::enter -> SKIP))))
+			 	 [] dbisim((true)&(internal__!NID_SendData -> SKIP ;  share__choice(exit -> SKIP) ; (share__choice(exited -> SKIP) ; share__choice(get_outputData?outputData -> true&(share__choice(processedData.out!outputData -> SKIP)));share__choice(true & (share__choice(set_dataToSend!false -> SKIP))) ; ReadInput::enter -> SKIP)))
+			 ) ; Trans)
+			 []
+			 (interrupt -> share__choice(exit -> SKIP) ; share__choice(exited -> terminate -> SKIP))
+			 []
+			 terminate -> SKIP
+		)
+		)
+	within
+		Trans
+	)
+	)
+	
+	-- Stateful
+	-- RULE: Stateful(stm:StateMachineBody) : CSPProcess
+	
+	-- Named process definitions
+	MachineBody(id__) = 
+		dbisim((
+		let
+			finalNodesEntered = {||}
+		within
+			((let
+				-- IMPLEMENTATION NOTE:
+				-- Here the 'enter' channel set is calculated explicitly because of the use of CSPM 
+				-- modules for defining the semantics of each node.
+				enterSS = {|
+				i0::enter,
+				Initialise::enter,
+				ReadInput::enter,
+				ProcessData::enter,
+				RecordData::enter,
+				j0::enter,
+				SendData::enter
+				|}
+				hideSet = union(enterSS,{|exit,exited,internal__|})
+			within 
+				((let
+					-- IMPLEMENTATION NOTE: the channel set 'enter' is calculated explicitly
+					-- because CSPM modules are used for the semantics of Node.
+					flowevts = union(enterSS,{|exit,exited,interrupt|})
+					transSync = {|internal__.NID_i0,internal__.NID_Initialise,laserScan__.NID_ReadInput.in,internal__.NID_ProcessData,internal__.NID_RecordData,internal__.NID_j0,internal__.NID_j0,internal__.NID_SendData|}
+				within
+					((
+					 (((-- RULE composeNodes(nc:NodeContainer)^nops : CSPProcess
+					   i0::D__(id__)
+					   [| { share__, terminate } |] (
+					   Initialise::D__(id__)
+					   [| { share__, terminate } |] (
+					   ReadInput::D__(id__)
+					   [| { share__, terminate } |] (
+					   ProcessData::D__(id__)
+					   [| { share__, terminate } |] (
+					   RecordData::D__(id__)
+					   [| { share__, terminate } |] (
+					   j0::D__(id__)
+					   [| { share__, terminate } |] (
+					   SendData::D__(id__)
+					   )
+					   )
+					   )
+					   )
+					   )
+					   )
+					 )
+					 [[Initialise::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_Initialise|}]]
+					 [[ReadInput::interrupt <- x__ | x__ <- {|interrupt,laserScan__.NID_ReadInput.in|}]]
+					 [[ProcessData::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_ProcessData|}]]
+					 [[RecordData::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_RecordData|}]]
+					 [[SendData::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_SendData|}]]
+					 [[i0::interrupt <- x__ | x__ <- {|internal__.NID_i0|}]]
+					 [[j0::interrupt <- x__ | x__ <- {|internal__.NID_j0,internal__.NID_j0|}]]
+					 )
+					  [[ share__ <- x__ | x__ <- {| share__,setR_laserScan_data |} ]] 
+					  [[set_dataToSend <- setL_dataToSend]]
+					 )
+					 [| union(union(union(flowevts,transSync),{terminate}),{|share__
+					 			,setL_dataToSend
+					 			,setR_laserScan_data
+					 			|}) |]
+					 ((i0::enter -> Transitions(id__))
+					  [[ share__ <- x__ | x__ <- {| share__,setL_dataToSend |} ]]
+					  [[set_laserScan_data <- setR_laserScan_data]]
+					 )
+					)[[setL_dataToSend <- set_dataToSend]]
+					 [[setR_laserScan_data <- set_laserScan_data]]
+					)
+				)
+				 \ hideSet)
+				[[
+					processedData__.x____ <- processedData,
+					laserScan__.x____ <- laserScan,
+					laserScans__.x____ <- laserScans,
+					get_laserScans__.x____ <- get_laserScans,
+					set_laserScans__.x____ <- set_laserScans
+					| x____ <- NIDS
+				]]
+			)
+			 [| {| interrupt |} |] SKIP)
+		)
+		)
+	
+	Behaviour(id__) = 
+		dbisim((MachineBody(id__)\ enteredSS)
+		)
+	
+	IteratedBehaviour(id__) = 
+		dbisim((MachineBody(id__)\ enteredSS)
+		)
+	
+	Stateful(id__) = 
+		((
+			(Behaviour(id__) [| union(getsetLocalChannels,{terminate}) |] varMemory(id__))
+		 	\getsetLocalChannels
+		)
+		)
+	
+	IteratedStateful(id__) =
+		(dbisim(
+			sbisim(
+				dbisim(
+					sbisim(
+						dbisim(
+							sbisim(
+								dbisim(
+									sbisim(
+										dbisim(
+											sbisim(
+												Behaviour(id__)
+												[| {|get_laserScans_var,set_laserScans_var,terminate|} |]
+												Memory_laserScans_var(<>)
+											)\{|get_laserScans_var,set_laserScans_var|}
+										)
+										[| {|get_laserScan_flag,set_laserScan_flag,terminate|} |]
+										Memory_laserScan_flag(true)
+									)\{|get_laserScan_flag,set_laserScan_flag|}
+								)
+								[| {|get_laserScan_data,set_laserScan_data,terminate|} |]
+								Memory_laserScan_data((0,<>))
+							)\{|get_laserScan_data,set_laserScan_data|}
+						)
+						[| {|get_dataToSend,set_dataToSend,terminate|} |]
+						Memory_dataToSend(true)
+					)\{|get_dataToSend,set_dataToSend|}
+				)
+				[| {|get_outputData,set_outputData,terminate|} |]
+				Memory_outputData((0,<>))
+			)\{|get_outputData,set_outputData|}
+		)
+		)
+	
+	-- Visible counterparts
+	MachineBody_VS_O(id__) = 
+		dbisim((
+		let
+			finalNodesEntered = {||}
+		within
+			((let
+				-- IMPLEMENTATION NOTE:
+				-- Here the 'enter' channel set is calculated explicitly because of the use of CSPM 
+				-- modules for defining the semantics of each node.
+				enterSS = {|
+				i0::enter,
+				Initialise::enter,
+				ReadInput::enter,
+				ProcessData::enter,
+				RecordData::enter,
+				j0::enter,
+				SendData::enter
+				|}
+				hideSet = union(enterSS,{|exit,exited,internal__|})
+			within 
+				((let
+					-- IMPLEMENTATION NOTE: the channel set 'enter' is calculated explicitly
+					-- because CSPM modules are used for the semantics of Node.
+					flowevts = union(enterSS,{|exit,exited,interrupt|})
+					transSync = {|internal__.NID_i0,internal__.NID_Initialise,laserScan__.NID_ReadInput.in,internal__.NID_ProcessData,internal__.NID_RecordData,internal__.NID_j0,internal__.NID_j0,internal__.NID_SendData|}
+				within
+					((
+					 (((-- RULE composeNodes(nc:NodeContainer)^nops : CSPProcess
+					   i0::VS_O__(id__)
+					   [| { share__, terminate } |] (
+					   Initialise::VS_O__(id__)
+					   [| { share__, terminate } |] (
+					   ReadInput::VS_O__(id__)
+					   [| { share__, terminate } |] (
+					   ProcessData::VS_O__(id__)
+					   [| { share__, terminate } |] (
+					   RecordData::VS_O__(id__)
+					   [| { share__, terminate } |] (
+					   j0::VS_O__(id__)
+					   [| { share__, terminate } |] (
+					   SendData::VS_O__(id__)
+					   )
+					   )
+					   )
+					   )
+					   )
+					   )
+					 )
+					 [[Initialise::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_Initialise|}]]
+					 [[ReadInput::interrupt <- x__ | x__ <- {|interrupt,laserScan__.NID_ReadInput.in|}]]
+					 [[ProcessData::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_ProcessData|}]]
+					 [[RecordData::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_RecordData|}]]
+					 [[SendData::interrupt <- x__ | x__ <- {|interrupt,internal__.NID_SendData|}]]
+					 [[i0::interrupt <- x__ | x__ <- {|internal__.NID_i0|}]]
+					 [[j0::interrupt <- x__ | x__ <- {|internal__.NID_j0,internal__.NID_j0|}]]
+					 )
+					  [[ share__ <- x__ | x__ <- {| share__,setR_laserScan_data |} ]] 
+					  [[set_dataToSend <- setL_dataToSend]]
+					 )
+					 [| union(union(union(flowevts,transSync),{terminate}),{|share__
+					 			,setL_dataToSend
+					 			,setR_laserScan_data
+					 			|}) |]
+					 ((i0::enter -> Transitions(id__))
+					  [[ share__ <- x__ | x__ <- {| share__,setL_dataToSend |} ]]
+					  [[set_laserScan_data <- setR_laserScan_data]]
+					 )
+					)[[setL_dataToSend <- set_dataToSend]]
+					 [[setR_laserScan_data <- set_laserScan_data]]
+					)
+				)
+				 \ hideSet)
+				[[
+					processedData__.x____ <- processedData,
+					laserScan__.x____ <- laserScan,
+					laserScans__.x____ <- laserScans,
+					get_laserScans__.x____ <- get_laserScans,
+					set_laserScans__.x____ <- set_laserScans
+					| x____ <- NIDS
+				]]
+			)
+			 [| {| interrupt |} |] SKIP)
+		)
+		)
+	
+	Behaviour_VS_O(id__) = 
+		dbisim((MachineBody_VS_O(id__))
+		)
+	
+	IteratedBehaviour_VS_O(id__) = 
+		dbisim((MachineBody_VS_O(id__))
+		)
+	
+	Stateful_VS_O(id__) = 
+		dbisim((
+			(Behaviour_VS_O(id__) [| union(getsetLocalChannels,{terminate}) |] varMemory(id__))
+		 	\getsetLocalChannels
+		)
+		)
+	
+	IteratedStateful_VS_O(id__) =
+		(dbisim(
+			sbisim(
+				dbisim(
+					sbisim(
+						dbisim(
+							sbisim(
+								dbisim(
+									sbisim(
+										dbisim(
+											sbisim(
+												Behaviour_VS_O(id__)
+												[| {|get_laserScans_var,set_laserScans_var,terminate|} |]
+												Memory_laserScans_var(<>)
+											)\{|get_laserScans_var,set_laserScans_var|}
+										)
+										[| {|get_laserScan_flag,set_laserScan_flag,terminate|} |]
+										Memory_laserScan_flag(true)
+									)\{|get_laserScan_flag,set_laserScan_flag|}
+								)
+								[| {|get_laserScan_data,set_laserScan_data,terminate|} |]
+								Memory_laserScan_data((0,<>))
+							)\{|get_laserScan_data,set_laserScan_data|}
+						)
+						[| {|get_dataToSend,set_dataToSend,terminate|} |]
+						Memory_dataToSend(true)
+					)\{|get_dataToSend,set_dataToSend|}
+				)
+				[| {|get_outputData,set_outputData,terminate|} |]
+				Memory_outputData((0,<>))
+			)\{|get_outputData,set_outputData|}
+		)
+		)
+	
+	-- END
+	
+	-- Memory
+	-- Memory variables
+	Memory_outputData(outputData) =
+		get_outputData!outputData -> Memory_outputData(outputData)
+		[]
+		set_outputData?x__ -> Memory_outputData(x__)
+		[]
+		terminate -> SKIP
+	Memory_dataToSend(dataToSend) =
+		get_dataToSend!dataToSend -> Memory_dataToSend(dataToSend)
+		[]
+		set_dataToSend?x__ -> Memory_dataToSend(x__)
+		[]
+		terminate -> SKIP
+	Memory_laserScan_data(laserScan_data) =
+		get_laserScan_data!laserScan_data -> Memory_laserScan_data(laserScan_data)
+		[]
+		set_laserScan_data?x__ -> Memory_laserScan_data(x__)
+		[]
+		terminate -> SKIP
+	Memory_laserScan_flag(laserScan_flag) =
+		get_laserScan_flag!laserScan_flag -> Memory_laserScan_flag(laserScan_flag)
+		[]
+		set_laserScan_flag?x__ -> Memory_laserScan_flag(x__)
+		[]
+		terminate -> SKIP
+	Memory_laserScans_var(laserScans_var) =
+		get_laserScans_var!laserScans_var -> Memory_laserScans_var(laserScans_var)
+		[]
+		set_laserScans_var?x__ -> Memory_laserScans_var(x__)
+		[]
+		terminate -> SKIP
+	
+	-- varMemory process
+	varMemory(id__) = Memory_outputData((0,<>))
+	[| { terminate } |] (
+	Memory_dataToSend(true)
+	[| { terminate } |] (
+	Memory_laserScan_data((0,<>))
+	[| { terminate } |] (
+	Memory_laserScan_flag(true)
+	[| { terminate } |] (
+	Memory_laserScans_var(<>)
+	)
+	)
+	)
+	)
+	
+	getsetLocalChannels = {|get_outputData,set_outputData,get_dataToSend,set_dataToSend,get_laserScan_data,set_laserScan_data,get_laserScan_flag,set_laserScan_flag,get_laserScans_var,set_laserScans_var|}
+	
+	-- Definition of the behaviour of state machines (default, optimised, visible, visible and optimised)
+	FVS__(id__) = STM_VS_O(id__)
+	
+	D__(id__) = STM(id__) \ internal_events
+	O__(id__) = sbisim(diamond(D__(id__)))
+	VS__(id__) = FVS__(id__)
+	VS_O__(id__) = sbisim(diamond(FVS__(id__)))
+	HEXT__(id__) = O__(id__) [|shared_variable_events|] SKIP
+	HUP__(id__) = O__(id__) [|{share__}|] SKIP
+	
+	-- Shared memory
+	-- Shared memory variables
+	
+	-- sharedVarMemory process
+	sharedVarMemory(id__) = terminate -> SKIP
+	
+	sharedVarSync = {||}
+	
+	sharedVarHide = {||}
+endmodule

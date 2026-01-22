@@ -1,0 +1,53 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "Control.csp"
+
+
+
+-- generate Control_Control
+P_Control_Control = let
+	id__ = 0
+	
+	
+	
+		
+within
+	Control::Control::O__(id__)
+
+assert P_Control_Control :[deadlock-free]	
+assert P_Control_Control;RUN({r__}) :[deadlock-free]
+assert P_Control_Control :[deterministic]
+assert P_Control_Control :[divergence-free]
+
+-- generate Control_Control_stm0
+P_Control_Control_stm0 = let
+	id__ = 0
+	
+	
+	
+within
+	Control::Control::stm0::O__(
+		id__
+	)
+assert P_Control_Control_stm0 :[deadlock-free]	
+assert P_Control_Control_stm0;RUN({r__}) :[deadlock-free]
+assert P_Control_Control_stm0 :[deterministic]
+assert P_Control_Control_stm0 :[divergence-free]
+-- timed deadlock free
+assert prioritise(P_Control_Control_stm0[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Control_Control_stm0
+-- timed deadlock free
+assert prioritise(P_Control_Control[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Control_Control
+

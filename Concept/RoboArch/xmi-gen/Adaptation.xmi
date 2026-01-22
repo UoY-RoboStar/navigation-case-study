@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ASCII"?>
+<robochart:RCPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart" name="Adaptation">
+  <imports importedNamespace="Turtlebot::*"/>
+  <imports importedNamespace="Adaptation_Legitimate::*"/>
+  <imports importedNamespace="Adaptation_Execute::*"/>
+  <imports importedNamespace="Adaptation_Plan::*"/>
+  <imports importedNamespace="Adaptation_Analyse::*"/>
+  <imports importedNamespace="Adaptation_Monitor::*"/>
+  <imports importedNamespace="Adaptation_Knowledge::*"/>
+  <imports importedNamespace="Types::*"/>
+  <controllers name="Adaptation">
+    <events name="laserScan">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.2"/>
+      </type>
+    </events>
+    <events name="spinConfig">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.1"/>
+      </type>
+    </events>
+    <machines xsi:type="robochart:StateMachineRef" name="stm_ref1">
+      <ref href="Adaptation_Analyse.xmi#//@machines.0"/>
+    </machines>
+    <machines xsi:type="robochart:StateMachineRef" name="stm_ref5">
+      <ref href="Adaptation_Knowledge.xmi#//@machines.0"/>
+    </machines>
+    <machines xsi:type="robochart:StateMachineRef" name="stm_ref2">
+      <ref href="Adaptation_Plan.xmi#//@machines.0"/>
+    </machines>
+    <machines xsi:type="robochart:StateMachineRef" name="stm_ref0">
+      <ref href="Adaptation_Monitor.xmi#//@machines.0"/>
+    </machines>
+    <machines xsi:type="robochart:StateMachineRef" name="stm_ref3">
+      <ref href="Adaptation_Legitimate.xmi#//@machines.0"/>
+    </machines>
+    <machines xsi:type="robochart:StateMachineRef" name="stm_ref4">
+      <ref href="Adaptation_Execute.xmi#//@machines.0"/>
+    </machines>
+    <connections from="//@controllers.0/@machines.0" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.29/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.2" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.29/@events.3"/>
+      <eto href="Types.xmi#//@interfaces.7/@events.3"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.4">
+      <efrom href="Types.xmi#//@interfaces.30/@events.2"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.2"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.2">
+      <efrom href="Types.xmi#//@interfaces.8/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.13/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.3" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.23/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.23/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.2" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.19/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.19/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.4" to="//@controllers.0/@machines.2">
+      <efrom href="Adaptation_Legitimate.xmi#//@machines.0/@events.2"/>
+      <eto href="Adaptation_Plan.xmi#//@machines.0/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.3">
+      <efrom href="Types.xmi#//@interfaces.13/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.13/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.4" to="//@controllers.0/@machines.5">
+      <efrom href="Adaptation_Legitimate.xmi#//@machines.0/@events.1"/>
+      <eto href="Adaptation_Execute.xmi#//@machines.0/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.4">
+      <efrom href="Types.xmi#//@interfaces.30/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.2" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.29/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.7/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.4" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.13/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.22/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.0">
+      <efrom href="Types.xmi#//@interfaces.2/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.13/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.0" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.6/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.6/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.2">
+      <efrom href="Types.xmi#//@interfaces.7/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.2">
+      <efrom href="Types.xmi#//@interfaces.7/@events.2"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.2"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.4" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.29/@events.3"/>
+      <eto href="Types.xmi#//@interfaces.30/@events.3"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.2" to="//@controllers.0/@machines.4">
+      <efrom href="Adaptation_Plan.xmi#//@machines.0/@events.0"/>
+      <eto href="Adaptation_Legitimate.xmi#//@machines.0/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.0" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.29/@events.3"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.3"/>
+    </connections>
+    <connections from="//@controllers.0" to="//@controllers.0/@machines.3" efrom="//@controllers.0/@events.0">
+      <eto href="Types.xmi#//@interfaces.12/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.3" to="//@controllers.0/@machines.0">
+      <efrom href="Adaptation_Monitor.xmi#//@machines.0/@events.0"/>
+      <eto href="Adaptation_Analyse.xmi#//@machines.0/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.5" to="//@controllers.0/@machines.0">
+      <efrom href="Adaptation_Execute.xmi#//@machines.0/@events.1"/>
+      <eto href="Adaptation_Analyse.xmi#//@machines.0/@events.2"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.0" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.13/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.2/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.5">
+      <efrom href="Types.xmi#//@interfaces.3/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.26/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.4">
+      <efrom href="Types.xmi#//@interfaces.22/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.13/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.4" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.29/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.30/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.3" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.13/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.13/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.0">
+      <efrom href="Types.xmi#//@interfaces.29/@events.2"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.2"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.2" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.26/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.26/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.0" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.6/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.6/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.2" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.13/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.8/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.5" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.26/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.3/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.4">
+      <efrom href="Types.xmi#//@interfaces.17/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.26/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.4" to="//@controllers.0/@machines.1">
+      <efrom href="Types.xmi#//@interfaces.26/@events.1"/>
+      <eto href="Types.xmi#//@interfaces.17/@events.1"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.0" to="//@controllers.0/@machines.2">
+      <efrom href="Adaptation_Analyse.xmi#//@machines.0/@events.0"/>
+      <eto href="Adaptation_Plan.xmi#//@machines.0/@events.2"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.2">
+      <efrom href="Types.xmi#//@interfaces.26/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.26/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.5" to="//@controllers.0" eto="//@controllers.0/@events.1">
+      <efrom href="Types.xmi#//@interfaces.11/@events.0"/>
+    </connections>
+    <connections from="//@controllers.0/@machines.1" to="//@controllers.0/@machines.0">
+      <efrom href="Types.xmi#//@interfaces.29/@events.0"/>
+      <eto href="Types.xmi#//@interfaces.29/@events.0"/>
+    </connections>
+  </controllers>
+</robochart:RCPackage>

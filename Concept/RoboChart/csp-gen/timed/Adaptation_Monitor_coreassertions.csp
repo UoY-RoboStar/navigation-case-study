@@ -1,0 +1,33 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "Adaptation_Monitor.csp"
+
+-- generate Adaptation_Monitor_Adaptation_Monitor
+P_Adaptation_Monitor_Adaptation_Monitor = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation_Monitor::Adaptation_Monitor::O__(
+		id__
+	)
+assert P_Adaptation_Monitor_Adaptation_Monitor :[deadlock-free]	
+assert P_Adaptation_Monitor_Adaptation_Monitor;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Monitor_Adaptation_Monitor :[deterministic]
+assert P_Adaptation_Monitor_Adaptation_Monitor :[divergence-free]
+-- timed deadlock free
+assert prioritise(P_Adaptation_Monitor_Adaptation_Monitor[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Adaptation_Monitor_Adaptation_Monitor
+
+
+

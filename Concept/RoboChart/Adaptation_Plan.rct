@@ -1,0 +1,206 @@
+package Adaptation_Plan
+
+import Types::* 
+import sequence_functions::*
+import sequence_toolkit::*
+
+stm Adaptation_Plan { 
+	
+	 event planningCompleted
+	 event planRejected
+	 event requestPlan
+	
+	uses Adaptation_PlanData_events
+	uses Adaptation_PlanData_set_events
+	uses Adaptation_RecordedData_events
+	uses Adaptation_VerificationInfo_events
+	uses Adaptation_AnalysisResults_events
+	
+	uses Adaptation_AnalysisResults
+	
+	var minMaxRotation : real * real
+	const PI : real
+	var commands : Seq(Direction)
+
+	initial i0
+
+	state Initialise {
+	}
+
+	state WaitForSignal {
+	}
+
+	state MakePlan {
+		initial i0
+	 	
+	 	state CalculateRotations {
+			entry 
+				get_plannedLidarMask; plannedLidarMask?plannedLidarMask_var;
+				minMaxRotation =
+						let maskAngles == rangeStep(0, 1, plannedLidarMask_var.baseAngle) ^ rangeStep(-1, 0, plannedLidarMask_var.baseAngle),
+							rotationValues == mapSeq(lambda b : boolean, x : real @ if b then real(0) else x end, zipSeqs(plannedLidarMask_var.values, maskAngles)) @
+						(|minReal(rotationValues), maxReal(rotationValues)|)
+	 	}
+	 	
+	 	transition t0 {
+	 		from i0
+	 		to CalculateRotations
+	 	}
+	 	
+	 	transition t1 {
+	 		from CalculateRotations
+	 		to PlanEmptyRotation
+	 		condition minMaxRotation[1] == minMaxRotation[2]
+	 	}
+	 	// `x == y` -  return `[]` - only one segment, nothing to do
+	 	state PlanEmptyRotation {
+	 		entry commands = <>
+	 	}
+	 	
+	 	transition t2 {
+	 		from CalculateRotations
+	 		to PlanPositiveRotation
+	 		condition minMaxRotation[1] > 0 /\ minMaxRotation[2] > 0
+	 	}
+	 	// `x` and `y` positive - return `[y, -y]` - spin by the higher amount and then back
+	 	state PlanPositiveRotation {
+	 		entry commands = <Direction (| omega = 1, duration = PI*minMaxRotation[2] |), Direction (| omega = -1, duration = PI*minMaxRotation[2] |)>
+	 		
+	 	}
+	 	
+	 	transition t3 {
+	 		from CalculateRotations
+	 		to PlanNegativeRotation
+	 		condition minMaxRotation[1] < 0 /\ minMaxRotation[2] < 0
+	 	}
+	 	// `x` and `y` negative - return `[x, -x]` - spin by the more negative amount and then back
+	 	state PlanNegativeRotation {
+	 		entry commands = <Direction (| omega = -1, duration = -PI*minMaxRotation[1] |), Direction (| omega = 1, duration = -PI*minMaxRotation[1] |)>
+	 	}
+	 	
+	 	transition t4 {
+	 		from CalculateRotations
+	 		to PlanFullRotation
+	 		condition minMaxRotation[1] < 0 /\ minMaxRotation[2] > 0 /\ minMaxRotation[2] - minMaxRotation[1] > 1
+	 	}
+	 	// `y - x > 1` - return `[Fraction(2)]` - spin by a full circle (2 pi radians), since they lie on opposite sides
+	 	state PlanFullRotation {
+	 		entry commands = <Direction (| omega = 1, duration = 2*PI |)>
+	 	}
+	 	
+	 	transition t5 {
+	 		from CalculateRotations
+	 		to PlanPositiveFirstRotation
+	 		condition minMaxRotation[1] < 0 /\ minMaxRotation[2] > 0 /\ -minMaxRotation[1] < minMaxRotation[2]
+	 	}
+	 	// `abs(y) > abs(x)` - return `[y, -y + x, -x]` - turn toward `y` first since that is larger
+	 	state PlanPositiveFirstRotation {
+	 		entry commands = <Direction (| omega = 1, duration = PI*minMaxRotation[2] |), Direction (| omega = -1, duration = PI*(minMaxRotation[2]-minMaxRotation[1]) |), Direction (| omega = 1, duration = -PI*minMaxRotation[1] |)>
+	 	}
+	 	
+	 	transition t6 {
+	 		from CalculateRotations
+	 		to PlanNegativeFirstRotation
+	 		condition minMaxRotation[1] < 0 /\ minMaxRotation[2] > 0 /\ -minMaxRotation[1] >= minMaxRotation[2]
+	 	}
+	 	// `abs(x) > abs(y)` - return `[x, -x + y, -y]`
+		//	* `x` is of greater magnitude (but not on the same side as y)
+		//	* turn toward `x` first, then back and toward `y` (`-x + y`), then back to original position
+	 	state PlanNegativeFirstRotation {
+	 		entry commands = <Direction (| omega = -1, duration = -PI*minMaxRotation[1] |), Direction (| omega = 1, duration = PI*(minMaxRotation[2]-minMaxRotation[1]) |), Direction (| omega = -1, duration = -PI*minMaxRotation[2] |)>
+	 	}
+	 	
+	 	transition t7 {
+	 		from PlanEmptyRotation
+	 		to f0
+	 	}
+	 	
+	 	transition t8 {
+	 		from PlanPositiveRotation
+	 		to f0
+	 	}
+	 	
+	 	transition t9 {
+	 		from PlanNegativeRotation
+	 		to f0
+	 	}
+	 	
+	 	transition t10 {
+	 		from PlanFullRotation
+	 		to f0
+	 	}
+	 	
+	 	transition t11 {
+	 		from PlanPositiveFirstRotation
+	 		to f0
+	 	}
+	 	
+	 	transition t12 {
+	 		from PlanNegativeFirstRotation
+	 		to f0
+	 	}
+	 	
+	 	final f0
+	}
+
+	state PlanMade {
+		entry set_directions!(SpinConfig (| commands = commands, period = 8 |))
+	}
+
+	state WaitForVerification {
+	}
+
+	state Replan {
+		// unconditionally do a full spin to ensure we check everything
+		entry commands = <Direction (| omega = 1, duration = 2*PI |)>
+	}
+
+	transition t0 {
+		from i0
+		to Initialise
+	}
+
+	transition t1 {
+		from Initialise
+		to WaitForSignal
+	}
+
+	transition t2 {
+		from WaitForSignal
+		to MakePlan
+		trigger requestPlan 
+	}
+
+	transition t3 {
+		from MakePlan
+		to PlanMade
+	}
+
+	transition t4 {
+		from PlanMade
+		to WaitForVerification
+	  	action planningCompleted 
+	}
+
+	transition t5 {
+		from WaitForVerification
+		to MakePlan
+		trigger requestPlan 
+	}
+
+	transition t6 {
+		from WaitForVerification
+		to Replan
+		trigger planRejected 
+	}
+
+	transition t7 {
+		from Replan
+		to PlanMade
+	}
+
+	 
+} 
+
+
+

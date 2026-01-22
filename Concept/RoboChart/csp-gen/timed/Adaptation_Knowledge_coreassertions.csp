@@ -1,0 +1,33 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "Adaptation_Knowledge.csp"
+
+-- generate Adaptation_Knowledge_Adaptation_Knowledge
+P_Adaptation_Knowledge_Adaptation_Knowledge = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation_Knowledge::Adaptation_Knowledge::O__(
+		id__
+	)
+assert P_Adaptation_Knowledge_Adaptation_Knowledge :[deadlock-free]	
+assert P_Adaptation_Knowledge_Adaptation_Knowledge;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Knowledge_Adaptation_Knowledge :[deterministic]
+assert P_Adaptation_Knowledge_Adaptation_Knowledge :[divergence-free]
+-- timed deadlock free
+assert prioritise(P_Adaptation_Knowledge_Adaptation_Knowledge[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Adaptation_Knowledge_Adaptation_Knowledge
+
+
+

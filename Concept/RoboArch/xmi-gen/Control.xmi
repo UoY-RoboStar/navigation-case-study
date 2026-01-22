@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ASCII"?>
+<robochart:RCPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart" name="Control">
+  <imports importedNamespace="Turtlebot::*"/>
+  <imports importedNamespace="Types::*"/>
+  <controllers name="Control">
+    <events name="spinConfig">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.1"/>
+      </type>
+    </events>
+    <events name="laserScan">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.2"/>
+      </type>
+    </events>
+    <rInterfaces href="Types.xmi#//@interfaces.1"/>
+    <interfaces href="Types.xmi#//@interfaces.0"/>
+    <machines xsi:type="robochart:StateMachineDef" name="stm0">
+      <nodes xsi:type="robochart:Initial" name="i0"/>
+      <nodes xsi:type="robochart:State" name="s0"/>
+      <transitions name="i0Tos0" source="//@controllers.0/@machines.0/@nodes.0" target="//@controllers.0/@machines.0/@nodes.1"/>
+    </machines>
+  </controllers>
+</robochart:RCPackage>

@@ -1,0 +1,45 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "function_toolkit_defs.csp"
+include "relation_toolkit_defs.csp"
+include "core_defs.csp"
+include "state_timed_defs.csp"
+include "Types_defs.csp"
+include "../instantiations.csp"
+include "set_toolkit_defs.csp"
+include "core_timed_defs.csp"
+include "sequence_toolkit_defs.csp"
+include "sequence_functions_defs.csp"
+include "Adaptation_Plan_defs.csp"
+include "robochart_defs.csp"
+include "Adaptation_Plan_Adaptation_Plan.csp"
+
+transparent wbisim
+channel r__
+-- generate Adaptation_Plan_Adaptation_Plan
+P_Adaptation_Plan_Adaptation_Plan = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation_Plan_Adaptation_Plan::O__(
+		id__,
+		const_Adaptation_Plan_Adaptation_Plan_PI
+	)
+assert P_Adaptation_Plan_Adaptation_Plan :[deadlock-free]	
+assert P_Adaptation_Plan_Adaptation_Plan;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Plan_Adaptation_Plan :[deterministic]
+assert P_Adaptation_Plan_Adaptation_Plan :[divergence-free]
+-- timed deadlock free
+assert prioritise(P_Adaptation_Plan_Adaptation_Plan[[tock<-tock,tock<-tock']],<diff(Events,{tock',tock}),{tock}>)\{tock} :[divergence free [FD]]
+
+-- timelock free
+assert RUN({tock}) ||| CHAOS(diff(Events,{|tock|})) [F= P_Adaptation_Plan_Adaptation_Plan

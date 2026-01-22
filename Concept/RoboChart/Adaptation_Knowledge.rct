@@ -1,0 +1,212 @@
+package Adaptation_Knowledge
+
+import Types::* 
+
+
+
+
+
+
+stm Adaptation_Knowledge { 
+	
+	
+	uses Adaptation_RecordedData
+	uses Adaptation_AnalysisResults
+	uses Adaptation_PlanData
+	uses Adaptation_VerificationInfo
+	uses Adaptation_RecordedData_events
+	uses Adaptation_RecordedData_set_events
+	uses Adaptation_RecordedData_ext_events
+	uses Adaptation_RecordedData_Analyse_events
+	uses Adaptation_RecordedData_Plan_events
+	uses Adaptation_RecordedData_Legitimate_events
+	uses Adaptation_AnalysisResults_events
+	uses Adaptation_AnalysisResults_set_events
+	uses Adaptation_AnalysisResults_ext_events
+	uses Adaptation_AnalysisResults_Plan_events
+	uses Adaptation_AnalysisResults_Legitimate_events
+	uses Adaptation_PlanData_events
+	uses Adaptation_PlanData_set_events
+	uses Adaptation_PlanData_ext_events
+	uses Adaptation_PlanData_Legitimate_events
+	uses Adaptation_PlanData_Execute_events
+	uses Adaptation_VerificationInfo_events
+	uses Adaptation_VerificationInfo_set_events
+	uses Adaptation_VerificationInfo_ext_events
+	uses Adaptation_VerificationInfo_Plan_events
+
+	initial i0
+
+	state Knowledge {
+	}
+
+	transition t0 {
+		from i0
+		to Knowledge
+	}
+
+	transition laserScans_get_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_laserScans 
+	  	action laserScans ! 	laserScans_var  
+	 
+	}
+
+	transition laserScans_set_trans {
+		from Knowledge
+		to Knowledge
+		trigger set_laserScans ? laserScans_var 
+	}
+
+	transition laserScans_ext_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_laserScans_ext 
+	  	action laserScans_ext ! 	laserScans_var  
+	 
+	}
+
+	transition laserScans_get_Analyse_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_laserScans_Analyse 
+	  	action laserScans_Analyse ! 	laserScans_var  
+	 
+	}
+
+	transition laserScans_get_Plan_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_laserScans_Plan 
+	  	action laserScans_Plan ! 	laserScans_var  
+	 
+	}
+
+	transition laserScans_get_Legitimate_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_laserScans_Legitimate 
+	  	action laserScans_Legitimate ! 	laserScans_var  
+	 
+	}
+
+	transition lidarMasks_get_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_lidarMasks 
+	  	action lidarMasks ! 	lidarMasks_var  
+	 
+	}
+
+	transition lidarMasks_set_trans {
+		from Knowledge
+		to Knowledge
+		trigger set_lidarMasks ? lidarMasks_var 
+	}
+
+	transition lidarMasks_ext_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_lidarMasks_ext 
+	  	action lidarMasks_ext ! 	lidarMasks_var  
+	 
+	}
+
+	transition plannedLidarMask_get_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_plannedLidarMask 
+	  	action plannedLidarMask ! 	plannedLidarMask_var  
+	 
+	}
+
+	transition plannedLidarMask_set_trans {
+		from Knowledge
+		to Knowledge
+		trigger set_plannedLidarMask ? plannedLidarMask_var 
+	}
+
+	transition plannedLidarMask_ext_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_plannedLidarMask_ext 
+	  	action plannedLidarMask_ext ! 	plannedLidarMask_var  
+	 
+	}
+
+	transition lidarMasks_get_Plan_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_lidarMasks_Plan 
+	  	action lidarMasks_Plan ! 	lidarMasks_var  
+	 
+	}
+
+	transition plannedLidarMask_get_Plan_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_plannedLidarMask_Plan 
+	  	action plannedLidarMask_Plan ! 	plannedLidarMask_var  
+	 
+	}
+
+	transition lidarMasks_get_Legitimate_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_lidarMasks_Legitimate 
+	  	action lidarMasks_Legitimate ! 	lidarMasks_var  
+	 
+	}
+
+	transition plannedLidarMask_get_Legitimate_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_plannedLidarMask_Legitimate 
+	  	action plannedLidarMask_Legitimate ! 	plannedLidarMask_var  
+	 
+	}
+
+	transition directions_get_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_directions 
+	  	action directions ! 	directions_var  
+	 
+	}
+
+	transition directions_set_trans {
+		from Knowledge
+		to Knowledge
+		trigger set_directions ? directions_var 
+	}
+
+	transition directions_ext_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_directions_ext 
+	  	action directions_ext ! 	directions_var  
+	 
+	}
+
+	transition directions_get_Legitimate_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_directions_Legitimate 
+	  	action directions_Legitimate ! 	directions_var  
+	 
+	}
+
+	transition directions_get_Execute_trans {
+		from Knowledge
+		to Knowledge
+		trigger get_directions_Execute 
+	  	action directions_Execute ! 	directions_var  
+	 
+	}
+
+	 
+} 
+
+
+

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ASCII"?>
+<robochart:RCPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart" name="Adaptation_Analyse">
+  <imports importedNamespace="Types::*"/>
+  <machines name="Adaptation_Analyse">
+    <variableList>
+      <vars name="data">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.2"/>
+        </type>
+      </vars>
+    </variableList>
+    <variableList>
+      <vars name="anomalyDetected">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.3"/>
+        </type>
+      </vars>
+    </variableList>
+    <variableList>
+      <vars name="awaitingAdaptation">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.3"/>
+        </type>
+      </vars>
+    </variableList>
+    <events name="anomalyFound"/>
+    <events name="processedData">
+      <type xsi:type="robochart:TypeRef">
+        <ref xsi:type="robochart:RecordType" href="Types.xmi#//@types.2"/>
+      </type>
+    </events>
+    <events name="adaptationCompleted"/>
+    <interfaces href="Types.xmi#//@interfaces.29"/>
+    <interfaces href="Types.xmi#//@interfaces.6"/>
+    <interfaces href="Types.xmi#//@interfaces.13"/>
+    <nodes xsi:type="robochart:Initial" name="i0"/>
+    <nodes xsi:type="robochart:State" name="Initialise"/>
+    <nodes xsi:type="robochart:State" name="WaitForData"/>
+    <nodes xsi:type="robochart:State" name="AnalyseAnomaly"/>
+    <nodes xsi:type="robochart:State" name="AnalysisComplete"/>
+    <transitions name="t0" source="//@machines.0/@nodes.0" target="//@machines.0/@nodes.1"/>
+    <transitions name="t1" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.2"/>
+    <transitions name="t2" source="//@machines.0/@nodes.2" target="//@machines.0/@nodes.2">
+      <trigger event="//@machines.0/@events.2"/>
+      <action xsi:type="robochart:Assignment">
+        <left xsi:type="robochart:VarRef" name="//@machines.0/@variableList.2/@vars.0"/>
+        <right xsi:type="robochart:BooleanExp" value="false"/>
+      </action>
+    </transitions>
+    <transitions name="t3" source="//@machines.0/@nodes.2" target="//@machines.0/@nodes.3">
+      <trigger event="//@machines.0/@events.1" parameter="//@machines.0/@variableList.0/@vars.0" _type="INPUT"/>
+    </transitions>
+    <transitions name="t4" source="//@machines.0/@nodes.3" target="//@machines.0/@nodes.4"/>
+    <transitions name="t5" source="//@machines.0/@nodes.4" target="//@machines.0/@nodes.2">
+      <condition xsi:type="robochart:RefExp" ref="//@machines.0/@variableList.1/@vars.0"/>
+      <action xsi:type="robochart:SeqStatement">
+        <statements xsi:type="robochart:CommunicationStmt">
+          <communication event="//@machines.0/@events.0"/>
+        </statements>
+        <statements xsi:type="robochart:Assignment">
+          <left xsi:type="robochart:VarRef" name="//@machines.0/@variableList.2/@vars.0"/>
+          <right xsi:type="robochart:BooleanExp" value="true"/>
+        </statements>
+      </action>
+    </transitions>
+    <transitions name="t6" source="//@machines.0/@nodes.4" target="//@machines.0/@nodes.2">
+      <condition xsi:type="robochart:Not">
+        <exp xsi:type="robochart:RefExp" ref="//@machines.0/@variableList.1/@vars.0"/>
+      </condition>
+    </transitions>
+  </machines>
+</robochart:RCPackage>

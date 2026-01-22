@@ -1,0 +1,128 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:06
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+include "Adaptation.csp"
+
+
+
+-- generate Adaptation_Adaptation
+P_Adaptation_Adaptation = let
+	id__ = 0
+	
+	
+	
+	const_Adaptation_Adaptation_stm_ref2_PI = const_Adaptation_Plan_Adaptation_Plan_PI
+	const_Adaptation_Adaptation_stm_ref1_slidingWindowSize = const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize
+	const_Adaptation_Adaptation_stm_ref1_occlusionThreshold = const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold
+	const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity = const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity
+	const_Adaptation_Adaptation_stm_ref1_replanningSensitivity = const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity
+		
+within
+	Adaptation::Adaptation::O__(id__,
+			    const_Adaptation_Adaptation_stm_ref2_PI,
+			    const_Adaptation_Adaptation_stm_ref1_slidingWindowSize,
+			    const_Adaptation_Adaptation_stm_ref1_occlusionThreshold,
+			    const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity,
+			    const_Adaptation_Adaptation_stm_ref1_replanningSensitivity)
+
+assert P_Adaptation_Adaptation :[deadlock-free]	
+assert P_Adaptation_Adaptation;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation :[deterministic]
+assert P_Adaptation_Adaptation :[divergence-free]
+
+-- generate Adaptation_Adaptation_stm_ref5
+P_Adaptation_Adaptation_stm_ref5 = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation::Adaptation::stm_ref5::O__(
+		id__
+	)
+assert P_Adaptation_Adaptation_stm_ref5 :[deadlock-free]	
+assert P_Adaptation_Adaptation_stm_ref5;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation_stm_ref5 :[deterministic]
+assert P_Adaptation_Adaptation_stm_ref5 :[divergence-free]
+-- generate Adaptation_Adaptation_stm_ref2
+P_Adaptation_Adaptation_stm_ref2 = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation::Adaptation::stm_ref2::O__(
+		id__,
+		const_Adaptation_Plan_Adaptation_Plan_PI
+	)
+assert P_Adaptation_Adaptation_stm_ref2 :[deadlock-free]	
+assert P_Adaptation_Adaptation_stm_ref2;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation_stm_ref2 :[deterministic]
+assert P_Adaptation_Adaptation_stm_ref2 :[divergence-free]
+-- generate Adaptation_Adaptation_stm_ref4
+P_Adaptation_Adaptation_stm_ref4 = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation::Adaptation::stm_ref4::O__(
+		id__
+	)
+assert P_Adaptation_Adaptation_stm_ref4 :[deadlock-free]	
+assert P_Adaptation_Adaptation_stm_ref4;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation_stm_ref4 :[deterministic]
+assert P_Adaptation_Adaptation_stm_ref4 :[divergence-free]
+-- generate Adaptation_Adaptation_stm_ref1
+P_Adaptation_Adaptation_stm_ref1 = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation::Adaptation::stm_ref1::O__(
+		id__,
+		const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize,
+		const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold,
+		const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity,
+		const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity
+	)
+assert P_Adaptation_Adaptation_stm_ref1 :[deadlock-free]	
+assert P_Adaptation_Adaptation_stm_ref1;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation_stm_ref1 :[deterministic]
+assert P_Adaptation_Adaptation_stm_ref1 :[divergence-free]
+-- generate Adaptation_Adaptation_stm_ref3
+P_Adaptation_Adaptation_stm_ref3 = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation::Adaptation::stm_ref3::O__(
+		id__
+	)
+assert P_Adaptation_Adaptation_stm_ref3 :[deadlock-free]	
+assert P_Adaptation_Adaptation_stm_ref3;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation_stm_ref3 :[deterministic]
+assert P_Adaptation_Adaptation_stm_ref3 :[divergence-free]
+-- generate Adaptation_Adaptation_stm_ref0
+P_Adaptation_Adaptation_stm_ref0 = let
+	id__ = 0
+	
+	
+	
+within
+	Adaptation::Adaptation::stm_ref0::O__(
+		id__
+	)
+assert P_Adaptation_Adaptation_stm_ref0 :[deadlock-free]	
+assert P_Adaptation_Adaptation_stm_ref0;RUN({r__}) :[deadlock-free]
+assert P_Adaptation_Adaptation_stm_ref0 :[deterministic]
+assert P_Adaptation_Adaptation_stm_ref0 :[divergence-free]
+

@@ -1,0 +1,15 @@
+package Control import Turtlebot::* import Types::* controller Control {
+	uses Sensors requires Movement event spinConfig : SpinConfig
+	event laserScan : LaserScan
+	stm stm0 {
+		initial i0
+		state s0 {
+		}
+		transition i0Tos0 {
+			from i0
+			to s0
+		}
+	}
+
+}
+

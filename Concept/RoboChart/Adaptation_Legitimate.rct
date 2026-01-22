@@ -1,0 +1,124 @@
+package Adaptation_Legitimate
+
+import Types::*
+import sequence_functions::*
+import sequence_toolkit::*
+
+
+stm Adaptation_Legitimate { 
+	
+	 event verifyPlan
+	 event planAccepted
+	 event planRejected
+	
+	uses Adaptation_VerificationInfo_events
+	uses Adaptation_VerificationInfo_set_events
+	uses Adaptation_RecordedData_events
+	uses Adaptation_AnalysisResults_events
+	uses Adaptation_PlanData_events
+	
+	uses Adaptation_AnalysisResults
+	uses Adaptation_PlanData
+	
+	var planLegitimated : boolean
+	
+	var rotatedMask : BoolLidarMask
+	var combinedMask : BoolLidarMask
+	var i : nat
+	var n : int
+	var rotation : real
+	var rotationSteps : real
+
+	initial i0
+
+	state Initialise {
+	}
+
+	state WaitForSignal {
+	}
+
+	state PerformVerification {
+		entry get_lidarMasks; lidarMasks?lidarMasks_var;
+			get_directions; directions?directions_var
+		
+		initial i0
+		
+		state ApplyRotation {
+		}
+		
+		final f0
+		
+		transition initalise {
+			from i0
+			to ApplyRotation
+			
+			action i = 1; rotatedMask = last(lidarMasks_var); combinedMask = last(lidarMasks_var)
+		}
+		
+		transition anotherRotationToApply {
+			from ApplyRotation
+			to ApplyRotation
+			
+			condition i <= size(directions_var.commands)
+			
+			action rotatedMask = 
+					let currentRotation == (directions_var.commands)[i],
+						omega == currentRotation.omega,
+						duration == currentRotation.duration,
+						baseAngle == rotatedMask.baseAngle,
+						rotationAmount == round((omega * duration) / baseAngle),
+						newValues == rotateSeq(rotatedMask.values, rotationAmount) @
+					BoolLidarMask (| values = newValues, baseAngle = baseAngle |);
+				combinedMask =
+					let zippedValues == zipSeqs(combinedMask.values, rotatedMask.values),
+						combinedValues == mapSeq(lambda x : boolean * boolean @ x[1] \/ x[2], zippedValues) @
+					BoolLidarMask (| values = combinedValues, baseAngle = combinedMask.baseAngle |)
+				
+		}
+		
+		transition allRotationsApplied {
+			from ApplyRotation
+			to f0
+			
+			condition i > size(directions_var.commands)
+			action planLegitimated = foldSeq(lambda x : boolean, y : boolean @ x /\ y, combinedMask.values, true)
+		}
+	}
+
+	transition t0 {
+		from i0
+		to Initialise
+	}
+
+	transition t1 {
+		from Initialise
+		to WaitForSignal
+	}
+
+	transition t2 {
+		from WaitForSignal
+		to PerformVerification
+		trigger verifyPlan 
+	}
+
+	transition t3 {
+		from PerformVerification
+		to WaitForSignal
+		condition 	planLegitimated  
+	
+	  	action planAccepted 
+	}
+
+	transition t4 {
+		from PerformVerification
+		to WaitForSignal
+		condition 	not planLegitimated  
+	
+	  	action planRejected 
+	}
+
+	 
+} 
+
+
+

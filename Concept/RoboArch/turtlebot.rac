@@ -1,0 +1,78 @@
+system Turtlebot
+
+datatype Direction {
+	omega : real
+	duration : real
+}
+
+datatype SpinConfig {
+	commands : Seq( Direction )
+	period : real
+}
+
+datatype LaserScan {
+	angleIncrement : real
+	ranges : Seq( real )
+}
+
+datatype BoolLidarMask {
+	values : Seq( boolean )
+	baseAngle : real
+}
+
+datatype ProbLidarMask {
+	values : Seq( real )
+	baseAngle : real
+}
+
+layer Adaptation : PlanningLayer {
+	inputs = laserScan : LaserScan;
+	outputs = spinConfig : SpinConfig;
+	
+	pattern = MAPLE-K;
+	
+	monitor {
+		inputs = laserScan;
+		processed_data_type = LaserScan;
+		recorded_data = laserScans : Seq( LaserScan );
+	}
+	analyse {
+		analysis_results = lidarMasks : Seq( BoolLidarMask );
+		analysis_results = plannedLidarMask : BoolLidarMask;
+	}
+	plan {
+		plan_data = directions : SpinConfig;
+	}
+	legitimate {
+		// legitimate just signals success or failure
+	}
+	execute {
+		outputs = spinConfig ;
+	}
+};
+
+layer Control : ControlLayer {
+	uses Sensors
+	requires Movement
+	
+	inputs = spinConfig : SpinConfig;
+	outputs = laserScan : LaserScan ;
+};
+
+interface Sensors {
+	event lidar : Seq( real )
+}
+
+interface Movement {
+	move ( lv : real , av : real )
+	moveToLocation ( location : real * real )
+}
+
+robotic platform Turtlebot {
+	uses Sensors
+	provides Movement
+}
+
+connections = Turtlebot on lidar to Control on lidar,
+	Control on laserScan to Adaptation on laserScan,
+	Adaptation on spinConfig to Control on spinConfig;

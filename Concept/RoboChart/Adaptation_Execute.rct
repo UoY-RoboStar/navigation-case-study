@@ -1,0 +1,66 @@
+package Adaptation_Execute
+
+import Types::* 
+
+
+
+
+
+
+stm Adaptation_Execute { 
+	
+	 event executePlan
+	 event adaptationCompleted
+	
+	uses Adaptation_PlanData_events
+	uses Adaptation_Outputs
+	
+	uses Adaptation_PlanData
+
+	initial i0
+
+	state Initialise {
+	}
+
+	state WaitForSignal {
+	}
+
+	state SendOutputs {
+		entry get_directions; directions?directions_var; spinConfig!directions_var
+	}
+
+	state FinishAdaptation {
+	}
+
+	transition t0 {
+		from i0
+		to Initialise
+	}
+
+	transition t1 {
+		from Initialise
+		to WaitForSignal
+	}
+
+	transition t2 {
+		from WaitForSignal
+		to SendOutputs
+		trigger executePlan 
+	}
+
+	transition t3 {
+		from SendOutputs
+		to FinishAdaptation
+	  	action adaptationCompleted 
+	}
+
+	transition t4 {
+		from FinishAdaptation
+		to WaitForSignal
+	}
+
+	 
+} 
+
+
+

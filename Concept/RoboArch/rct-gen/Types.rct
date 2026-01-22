@@ -1,0 +1,143 @@
+package Types interface Sensors {
+	event lidar : Seq( real )
+}
+
+interface Movement {
+	move ( lv : real , av : real )
+	moveToLocation ( location : real * real )
+}
+
+interface Adaptation_RecordedData_Analyse_events {
+	event laserScans_Analyse : Seq( LaserScan )
+	event get_laserScans_Analyse
+}
+
+interface Adaptation_PlanData_Execute_events {
+	event directions_Execute : SpinConfig
+	event get_directions_Execute
+}
+
+interface Adaptation_InputVars {
+	var laserScan_data : LaserScan
+}
+
+interface Adaptation_RecordedData {
+	var laserScans_var : Seq( LaserScan )
+}
+
+interface Adaptation_AnalysisResults_set_events {
+	event set_lidarMasks : Seq( BoolLidarMask )
+	event set_plannedLidarMask : BoolLidarMask
+}
+
+interface Adaptation_AnalysisResults_Plan_events {
+	event lidarMasks_Plan : Seq( BoolLidarMask )
+	event get_lidarMasks_Plan
+	event plannedLidarMask_Plan : BoolLidarMask
+	event get_plannedLidarMask_Plan
+}
+
+interface Adaptation_RecordedData_Plan_events {
+	event laserScans_Plan : Seq( LaserScan )
+	event get_laserScans_Plan
+}
+
+interface Adaptation_AnalysisResults_ext_events {
+	event lidarMasks_ext : Seq( BoolLidarMask )
+	event get_lidarMasks_ext
+	event plannedLidarMask_ext : BoolLidarMask
+	event get_plannedLidarMask_ext
+}
+
+interface Adaptation_VerificationInfo_ext_events {
+}
+
+interface Adaptation_Outputs {
+	event spinConfig : SpinConfig
+}
+
+interface Adaptation_Inputs {
+	event laserScan : LaserScan
+}
+
+interface Adaptation_RecordedData_events {
+	event laserScans : Seq( LaserScan )
+	event get_laserScans
+}
+
+interface Adaptation_VerificationInfo {
+}
+
+interface Adaptation_AnalysisResults {
+	var lidarMasks_var : Seq( BoolLidarMask )
+	var plannedLidarMask_var : BoolLidarMask
+}
+
+interface Adaptation_PlanData_ext_events {
+	event directions_ext : SpinConfig
+	event get_directions_ext
+}
+
+interface Adaptation_PlanData_Legitimate_events {
+	event directions_Legitimate : SpinConfig
+	event get_directions_Legitimate
+}
+
+interface Adaptation_VerificationInfo_events {
+}
+
+interface Adaptation_PlanData_set_events {
+	event set_directions : SpinConfig
+}
+
+interface Adaptation_RecordedData_ext_events {
+	event laserScans_ext : Seq( LaserScan )
+	event get_laserScans_ext
+}
+
+interface IAdaptation {
+}
+
+interface Adaptation_RecordedData_Legitimate_events {
+	event laserScans_Legitimate : Seq( LaserScan )
+	event get_laserScans_Legitimate
+}
+
+interface Adaptation_RecordedData_set_events {
+	event set_laserScans : Seq( LaserScan )
+}
+
+interface Adaptation_VerificationInfo_set_events {
+}
+
+interface Adaptation_PlanData {
+	var directions_var : SpinConfig
+}
+
+interface Adaptation_PlanData_events {
+	event directions : SpinConfig
+	event get_directions
+}
+
+interface Adaptation_VerificationInfo_Plan_events {
+}
+
+interface Adaptation_InputFlags {
+	var laserScan_flag : boolean
+}
+
+interface Adaptation_AnalysisResults_events {
+	event lidarMasks : Seq( BoolLidarMask )
+	event get_lidarMasks
+	event plannedLidarMask : BoolLidarMask
+	event get_plannedLidarMask
+}
+
+interface Adaptation_AnalysisResults_Legitimate_events {
+	event lidarMasks_Legitimate : Seq( BoolLidarMask )
+	event get_lidarMasks_Legitimate
+	event plannedLidarMask_Legitimate : BoolLidarMask
+	event get_plannedLidarMask_Legitimate
+}
+
+datatype Direction { omega : real duration : real } datatype SpinConfig { commands : Seq( Direction ) period : real } datatype LaserScan { angleIncrement : real ranges : Seq( real ) } datatype BoolLidarMask { values : Seq( boolean ) baseAngle : real } datatype ProbLidarMask { values : Seq( real ) baseAngle : real }

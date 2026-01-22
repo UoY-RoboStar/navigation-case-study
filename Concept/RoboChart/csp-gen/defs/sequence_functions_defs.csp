@@ -1,0 +1,23 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+-- data definitions used by /Turtlebot-robochart-new2/sequence_functions.rct
+
+pre_sequence_functions_mapSeq(param_f,param_seq) = true
+pre_sequence_functions_foldSeq(param_f,param_seq,param_init) = true
+pre_sequence_functions_rotateSeq(param_s,param_n) = true
+pre_sequence_functions_zipSeqs(param_seq1,param_seq2) = true
+pre_sequence_functions_round(param_x) = true
+pre_sequence_functions_rangeStep(param_x,param_y,param_step) = true
+pre_sequence_functions_hasMinReal(param_a) = true
+pre_sequence_functions_hasMaxReal(param_a) = true
+pre_sequence_functions_minReal(param_a) =  sequence_functions_hasMinReal(param_a)
+pre_sequence_functions_maxReal(param_a) =  sequence_functions_hasMaxReal(param_a)
+pre_sequence_functions_real(param_x) = true
+	

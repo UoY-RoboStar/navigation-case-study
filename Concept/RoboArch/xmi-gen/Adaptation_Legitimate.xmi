@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ASCII"?>
+<robochart:RCPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:robochart="http://www.robocalc.circus/RoboChart" name="Adaptation_Legitimate">
+  <imports importedNamespace="Types::*"/>
+  <machines name="Adaptation_Legitimate">
+    <variableList>
+      <vars name="planLegitimated">
+        <type xsi:type="robochart:TypeRef">
+          <ref xsi:type="robochart:PrimitiveType" href="platform:/plugin/circus.robocalc.robochart.textual/lib/robochart/core.rct#//@types.3"/>
+        </type>
+      </vars>
+    </variableList>
+    <events name="verifyPlan"/>
+    <events name="planAccepted"/>
+    <events name="planRejected"/>
+    <interfaces href="Types.xmi#//@interfaces.18"/>
+    <interfaces href="Types.xmi#//@interfaces.24"/>
+    <interfaces href="Types.xmi#//@interfaces.13"/>
+    <interfaces href="Types.xmi#//@interfaces.29"/>
+    <interfaces href="Types.xmi#//@interfaces.26"/>
+    <nodes xsi:type="robochart:Initial" name="i0"/>
+    <nodes xsi:type="robochart:State" name="Initialise"/>
+    <nodes xsi:type="robochart:State" name="WaitForSignal"/>
+    <nodes xsi:type="robochart:State" name="PerformVerification"/>
+    <transitions name="t0" source="//@machines.0/@nodes.0" target="//@machines.0/@nodes.1"/>
+    <transitions name="t1" source="//@machines.0/@nodes.1" target="//@machines.0/@nodes.2"/>
+    <transitions name="t2" source="//@machines.0/@nodes.2" target="//@machines.0/@nodes.3">
+      <trigger event="//@machines.0/@events.0"/>
+    </transitions>
+    <transitions name="t3" source="//@machines.0/@nodes.3" target="//@machines.0/@nodes.2">
+      <condition xsi:type="robochart:RefExp" ref="//@machines.0/@variableList.0/@vars.0"/>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication event="//@machines.0/@events.1"/>
+      </action>
+    </transitions>
+    <transitions name="t4" source="//@machines.0/@nodes.3" target="//@machines.0/@nodes.2">
+      <condition xsi:type="robochart:Not">
+        <exp xsi:type="robochart:RefExp" ref="//@machines.0/@variableList.0/@vars.0"/>
+      </condition>
+      <action xsi:type="robochart:CommunicationStmt">
+        <communication event="//@machines.0/@events.2"/>
+      </action>
+    </transitions>
+  </machines>
+</robochart:RCPackage>

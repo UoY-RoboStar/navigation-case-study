@@ -1,0 +1,37 @@
+
+--
+-- RoboChart generator version 3.0.0.qualifier
+-- Automatically generated on 17-12-2025 22:55:07
+--
+-- Iterated compression status: true
+-- Assertions compression status: false
+--
+
+-- data definitions used by /Turtlebot-robochart-new2/Types.rct
+nametype Types_Direction = (core_real,core_real)
+Types_Direction_omega((omega,duration)) = omega
+update_Types_Direction_omega((omega,duration),v__) = (v__,duration)
+Types_Direction_duration((omega,duration)) = duration
+update_Types_Direction_duration((omega,duration),v__) = (omega,v__)
+nametype Types_SpinConfig = (LSeq(Types_Direction,2),core_real)
+Types_SpinConfig_commands((commands,period)) = commands
+update_Types_SpinConfig_commands((commands,period),v__) = (v__,period)
+Types_SpinConfig_period((commands,period)) = period
+update_Types_SpinConfig_period((commands,period),v__) = (commands,v__)
+nametype Types_LaserScan = (core_real,LSeq(core_real,2))
+Types_LaserScan_angleIncrement((angleIncrement,ranges)) = angleIncrement
+update_Types_LaserScan_angleIncrement((angleIncrement,ranges),v__) = (v__,ranges)
+Types_LaserScan_ranges((angleIncrement,ranges)) = ranges
+update_Types_LaserScan_ranges((angleIncrement,ranges),v__) = (angleIncrement,v__)
+nametype Types_BoolLidarMask = (LSeq(core_boolean,2),core_real)
+Types_BoolLidarMask_values((values,baseAngle)) = values
+update_Types_BoolLidarMask_values((values,baseAngle),v__) = (v__,baseAngle)
+Types_BoolLidarMask_baseAngle((values,baseAngle)) = baseAngle
+update_Types_BoolLidarMask_baseAngle((values,baseAngle),v__) = (values,v__)
+nametype Types_ProbLidarMask = (LSeq(core_real,2),core_real)
+Types_ProbLidarMask_values((values,baseAngle)) = values
+update_Types_ProbLidarMask_values((values,baseAngle),v__) = (v__,baseAngle)
+Types_ProbLidarMask_baseAngle((values,baseAngle)) = baseAngle
+update_Types_ProbLidarMask_baseAngle((values,baseAngle),v__) = (values,v__)
+
+	

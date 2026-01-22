@@ -1,0 +1,57 @@
+package sequence_functions
+
+import sequence_toolkit::*
+
+
+function mapSeq(f : ?X -> ?Y, seq : Seq(?X)) : Seq(?Y) {
+	postcondition seq == <> => (result == <>)
+	postcondition seq != <> => (result == (<f(head(seq))> ^ mapSeq(f, tail(seq))))
+}
+
+function foldSeq(f : ?X * ?X -> ?X, seq : Seq(?X), init : ?X) : ?X {
+	postcondition seq == <> => result == init
+	postcondition seq != <> => result == f(head(seq), foldSeq(f, tail(seq), init))
+}
+
+function rotateSeq(s : Seq(?X), n : int) : Seq(?X) {
+	postcondition s == <> => result == <>
+ 	postcondition s != <> /\ n == 0 => result == s 
+	postcondition s != <> /\ n > 0 => result == rotateSeq(<last(s)> ^ front(s), n-1)
+	postcondition s != <> /\ n < 0 => result == rotateSeq(tail(s) ^ <head(s)>, n+1)
+}
+
+function zipSeqs(seq1 : Seq(?X), seq2 : Seq(?Y)) : Seq(?X * ?Y) {
+	postcondition seq1 == <> \/ seq2 == <> => result == <>
+	postcondition seq1 != <> /\ seq2 != <> => result == <(head(seq1), head(seq2))> ^ zipSeqs(tail(seq1), tail(seq2))
+}
+
+function round(x : real) : int {
+	postcondition (exists k : int @ x == (2*k+1)/2) => result == (2*x + 1)/2 // round .5 up
+	postcondition not (exists m : int @ x == (2*m+1)/2) => (forall n : int @ (n-x)*(n-x) > (result-x)*(result-x)) // find the nearest integer
+}
+
+function rangeStep(x : real, y : real, step : real): Seq(real) {
+	postcondition result == {i: real | (exists k : nat @ k * step == i) /\ x <= i /\ i <= y}
+}
+
+function hasMinReal(a:Seq(real)): boolean {
+	postcondition result == (exists m: real | m in a @ (forall n: real | n in a @ m <= n)) 
+}
+
+function hasMaxReal(a:Seq(real)): boolean {
+	postcondition result == (exists m: real | m in a @ (forall n: real | n in a @ m >= n)) 
+}
+
+function minReal(a:Seq(real)): real {
+	precondition hasMinReal(a) 
+	postcondition result in a /\ (forall n: real | n in a @ result <= n)
+}
+
+function maxReal(a:Seq(real)): real {
+	precondition hasMaxReal(a)
+	postcondition result in a /\ (forall n: real | n in a @ result >= n)
+}
+
+function real(x : nat) : real {
+	postcondition result == x
+}

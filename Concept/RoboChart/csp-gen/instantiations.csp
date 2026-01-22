@@ -1,0 +1,153 @@
+-- generate nat not
+nametype core_nat = { 0..2 }
+
+-- generate sequence_functions_hasMaxReal not
+sequence_functions_hasMaxReal(a) = not null(a)
+
+-- generate sequence_functions_round not
+sequence_functions_round(x) = x -- assume we are representing reals with integers
+
+-- generate sequence_functions_zipSeqs not
+sequence_functions_zipSeqs(<>, <>) = <>
+sequence_functions_zipSeqs(<>, ys) = <>
+sequence_functions_zipSeqs(xs, <>) = <>
+sequence_functions_zipSeqs(<x> ^ xs, <y> ^ ys) = <(x, y)> ^ sequence_functions_zipSeqs(xs, ys)
+
+-- generate sequence_functions_minReal not
+sequence_functions_minReal(<>) = error("Empty string has no minimum")
+sequence_functions_minReal(<x> ^ xs) =
+	let checkMin(<>, n) = n
+	    checkMin(<x> ^ xs, n) = if x < n then checkMin(xs, x) else checkMin(xs, n)
+	within checkMin(xs, x)
+
+-- generate real not
+nametype core_real = { -2..2 }
+
+-- generate sequence_functions_maxReal not
+sequence_functions_maxReal(<>) = error("Empty string has no minimum")
+sequence_functions_maxReal(<x> ^ xs) =
+	let checkMax(<>, n) = n
+	    checkMax(<x> ^ xs, n) = if n < x then checkMax(xs, x) else checkMax(xs, n)
+	within checkMax(xs, x)
+
+-- generate int not
+nametype core_int = { -2..2 }
+
+-- generate sequence_functions_rotateSeq not
+sequence_functions_rotateSeq(<>, n) = <>
+sequence_functions_rotateSeq(<x>, n) = <x>
+sequence_functions_rotateSeq(seq, 0) = seq
+sequence_functions_rotateSeq(<x1> ^ xs ^ <x2>, n) =
+	if n < 0 then
+		sequence_functions_rotateSeq(xs ^ <x2, x1>, n+1)
+	else
+		sequence_functions_rotateSeq(<x2, x1> ^ xs, n-1)
+
+-- generate sequence_functions_real not
+sequence_functions_real(x) = x
+
+-- BASIC TYPES
+
+-- generate sequence_functions_mapSeq not
+sequence_functions_mapSeq(f, <>) = <>
+sequence_functions_mapSeq(f, <x> ^ xs) = <callFunc(f, x)> ^ sequence_functions_mapSeq(f, xs)
+
+-- generate sequence_functions_foldSeq not
+sequence_functions_foldSeq(f, <>, init) = init
+sequence_functions_foldSeq(f, <x> ^ xs, init) = sequence_functions_foldSeq(f, xs, callFunc(f,(init, x)))
+
+-- generate sequence_functions_rangeStep not
+sequence_functions_rangeStep(x,y,step) =
+	if x > y then <> else <x> ^ sequence_functions_rangeStep(x+step, y, step)
+
+-- generate sequence_functions_hasMinReal not
+sequence_functions_hasMinReal(a) = not null(a)
+
+-- generate const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity
+const_Adaptation_Analyse_Adaptation_Analyse_replanningSensitivity = 0
+
+-- generate string
+nametype core_string = LSeq(Char,2)
+
+-- generate const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity
+const_Adaptation_Analyse_Adaptation_Analyse_occlusionSensitivity = 0
+
+-- generate -- OPERATION BOUNDS
+
+-- MODULE CONSTANTS
+
+-- CONTROLLER CONSTANTS
+
+-- STATEMACHINE CONSTANTS
+
+-- OPERATION CONSTANTS
+
+-- BASIC TYPES
+
+-- generate const_Adaptation_Adaptation_stm_ref1_slidingWindowSize
+const_Adaptation_Adaptation_stm_ref1_slidingWindowSize = 0
+
+-- generate const_Adaptation_Adaptation_stm_ref1_replanningSensitivity
+const_Adaptation_Adaptation_stm_ref1_replanningSensitivity = 0
+
+-- OPERATION CONSTANTS
+
+-- BASIC TYPES
+
+-- generate Plus
+Plus(e1,e2,T) = if member(e1+e2,T) then e1+e2 else e1
+
+-- generate --
+
+-- MODULE CONSTANTS
+
+-- CONTROLLER CONSTANTS
+
+-- STATEMACHINE CONSTANTS
+
+-- generate core_clock_type
+nametype core_clock_type = {0..10}
+
+-- BASIC FUNCTIONS
+
+-- generate const_Adaptation_Plan_Adaptation_Plan_PI
+const_Adaptation_Plan_Adaptation_Plan_PI = 0
+
+-- generate const_Adaptation_Adaptation_stm_ref2_PI
+const_Adaptation_Adaptation_stm_ref2_PI = 0
+
+-- generate const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold
+const_Adaptation_Analyse_Adaptation_Analyse_occlusionThreshold = 0
+
+-- generate const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize
+const_Adaptation_Analyse_Adaptation_Analyse_slidingWindowSize = 0
+
+-- generate const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity
+const_Adaptation_Adaptation_stm_ref1_occlusionSensitivity = 0
+
+-- generate -- SEQUENCE FUNCTIONS
+
+-- generate const_Adaptation_Adaptation_stm_ref1_occlusionThreshold
+const_Adaptation_Adaptation_stm_ref1_occlusionThreshold = 0
+
+-- generate Div
+Div(e1,e2,T) = if member(e1/e2,T) then e1/e2 else e1
+
+-- generate sequence_functions_rotateBoolSeq
+sequence_functions_rotateBoolSeq(s,n) = <>
+
+-- generate Neg
+Neg(e1,T) = if member(-e1,T) then -e1 else e1
+
+-- generate boolean
+nametype core_boolean = Bool
+
+-- generate Mult
+Mult(e1,e2,T) = if member(e1*e2,T) then e1*e2 else e1
+
+-- generate Modulus
+Modulus(e1,e2,T) = if member(e1%e2,T) then e1%e2 else e1
+
+-- generate Minus
+Minus(e1,e2,T) = if member(e1-e2,T) then e1-e2 else e1
+

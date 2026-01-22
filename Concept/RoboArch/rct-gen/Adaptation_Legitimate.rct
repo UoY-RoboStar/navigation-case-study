@@ -1,0 +1,39 @@
+package Adaptation_Legitimate import Types::* stm Adaptation_Legitimate {
+	uses Adaptation_VerificationInfo_events uses Adaptation_VerificationInfo_set_events uses Adaptation_RecordedData_events uses Adaptation_AnalysisResults_events uses Adaptation_PlanData_events var planLegitimated : boolean
+	event verifyPlan
+	event planAccepted
+	event planRejected
+	initial i0
+	state Initialise {
+	}
+	state WaitForSignal {
+	}
+	state PerformVerification {
+	}
+	transition t0 {
+		from i0
+		to Initialise
+	}
+	transition t1 {
+		from Initialise
+		to WaitForSignal
+	}
+	transition t2 {
+		from WaitForSignal
+		to PerformVerification
+		trigger verifyPlan
+	}
+	transition t3 {
+		from PerformVerification
+		to WaitForSignal
+		condition planLegitimated
+		action planAccepted
+	}
+	transition t4 {
+		from PerformVerification
+		to WaitForSignal
+		condition not planLegitimated
+		action planRejected
+	}
+}
+
