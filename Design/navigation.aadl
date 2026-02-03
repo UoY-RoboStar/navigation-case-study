@@ -1,0 +1,333 @@
+package Adaptation_Monitor
+public
+with Base_Types, messages;
+  process Adaptation_Monitor
+    features
+      processedData: in out event data port messages::LaserScan;
+  end Adaptation_Monitor;
+  thread Adaptation_Monitor_Initialise_Thread
+  end Adaptation_Monitor_Initialise_Thread;
+  thread Adaptation_Monitor_ReadInput_Thread
+  end Adaptation_Monitor_ReadInput_Thread;
+  thread Adaptation_Monitor_ProcessData_Thread
+  end Adaptation_Monitor_ProcessData_Thread;
+  thread Adaptation_Monitor_RecordData_Thread
+  end Adaptation_Monitor_RecordData_Thread;
+  thread Adaptation_Monitor_SendData_Thread
+  end Adaptation_Monitor_SendData_Thread;
+  thread implementation Adaptation_Monitor_Initialise_Thread.impl for Adaptation_Monitor_Initialise_Thread
+  end Adaptation_Monitor_Initialise_Thread.impl;
+  thread implementation Adaptation_Monitor_ReadInput_Thread.impl for Adaptation_Monitor_ReadInput_Thread
+  end Adaptation_Monitor_ReadInput_Thread.impl;
+  thread implementation Adaptation_Monitor_ProcessData_Thread.impl for Adaptation_Monitor_ProcessData_Thread
+  end Adaptation_Monitor_ProcessData_Thread.impl;
+  thread implementation Adaptation_Monitor_RecordData_Thread.impl for Adaptation_Monitor_RecordData_Thread
+  end Adaptation_Monitor_RecordData_Thread.impl;
+  thread implementation Adaptation_Monitor_SendData_Thread.impl for Adaptation_Monitor_SendData_Thread
+  end Adaptation_Monitor_SendData_Thread.impl;
+  process implementation Adaptation_Monitor.impl for Adaptation_Monitor
+    subcomponents
+      Initialise_thread: thread Adaptation_Monitor_Initialise_Thread.impl;
+      ReadInput_thread: thread Adaptation_Monitor_ReadInput_Thread.impl;
+      ProcessData_thread: thread Adaptation_Monitor_ProcessData_Thread.impl;
+      RecordData_thread: thread Adaptation_Monitor_RecordData_Thread.impl;
+      SendData_thread: thread Adaptation_Monitor_SendData_Thread.impl;
+      outputData: data messages::LaserScan;
+      dataToSend: data Base_Types::Boolean;
+    modes
+      Initialise: initial mode;
+      ReadInput: mode;
+      ProcessData: mode;
+      RecordData: mode;
+      SendData: mode;
+    annex behaviour_specification {**
+      mode transitions
+        Initialise -> ReadInput;
+        ReadInput -[laserScan]-> ProcessData;
+        ProcessData -> RecordData;
+        SendData -> ReadInput;
+    **};
+  end Adaptation_Monitor.impl;
+end Adaptation_Monitor;
+
+
+package Types
+public
+with Base_Types, messages;
+  data Direction
+  end Direction;
+  data SpinConfig
+  end SpinConfig;
+  data LaserScan
+  end LaserScan;
+  data BoolLidarMask
+  end BoolLidarMask;
+  data ProbLidarMask
+  end ProbLidarMask;
+end Types;
+
+
+package Adaptation_Analyse
+public
+with Base_Types, messages;
+  process Adaptation_Analyse
+    features
+      anomalyFound: in out event port;
+      processedData: in out event data port messages::LaserScan;
+      adaptationCompleted: in out event port;
+  end Adaptation_Analyse;
+  thread Adaptation_Analyse_Initialise_Thread
+  end Adaptation_Analyse_Initialise_Thread;
+  thread Adaptation_Analyse_WaitForData_Thread
+  end Adaptation_Analyse_WaitForData_Thread;
+  thread Adaptation_Analyse_AnalyseAnomaly_Thread
+  end Adaptation_Analyse_AnalyseAnomaly_Thread;
+  thread Adaptation_Analyse_AnalysisComplete_Thread
+  end Adaptation_Analyse_AnalysisComplete_Thread;
+  thread implementation Adaptation_Analyse_Initialise_Thread.impl for Adaptation_Analyse_Initialise_Thread
+  end Adaptation_Analyse_Initialise_Thread.impl;
+  thread implementation Adaptation_Analyse_WaitForData_Thread.impl for Adaptation_Analyse_WaitForData_Thread
+  end Adaptation_Analyse_WaitForData_Thread.impl;
+  thread implementation Adaptation_Analyse_AnalyseAnomaly_Thread.impl for Adaptation_Analyse_AnalyseAnomaly_Thread
+  end Adaptation_Analyse_AnalyseAnomaly_Thread.impl;
+  thread implementation Adaptation_Analyse_AnalysisComplete_Thread.impl for Adaptation_Analyse_AnalysisComplete_Thread
+  end Adaptation_Analyse_AnalysisComplete_Thread.impl;
+  process implementation Adaptation_Analyse.impl for Adaptation_Analyse
+    subcomponents
+      Initialise_thread: thread Adaptation_Analyse_Initialise_Thread.impl;
+      WaitForData_thread: thread Adaptation_Analyse_WaitForData_Thread.impl;
+      AnalyseAnomaly_thread: thread Adaptation_Analyse_AnalyseAnomaly_Thread.impl;
+      AnalysisComplete_thread: thread Adaptation_Analyse_AnalysisComplete_Thread.impl;
+      data: data messages::LaserScan;
+      anomalyDetected: data Base_Types::Boolean;
+      awaitingAdaptation: data Base_Types::Boolean;
+      slidingProbLidarMasks: data messages::ProbLidarMask;
+      probLidarMask: data messages::ProbLidarMask;
+      lidarMask: data messages::BoolLidarMask;
+      slidingWindowSize: data Base_Types::Natural;
+      occlusionThreshold: data Base_Types::Float;
+      occlusionSensitivity: data Base_Types::Float;
+      replanningSensitivity: data Base_Types::Float;
+    modes
+      Initialise: initial mode;
+      WaitForData: mode;
+      AnalyseAnomaly: mode;
+      AnalysisComplete: mode;
+    annex behaviour_specification {**
+      mode transitions
+        Initialise -> WaitForData;
+        WaitForData -[adaptationCompleted]-> WaitForData;
+        WaitForData -[processedData]-> AnalyseAnomaly;
+        AnalyseAnomaly -> AnalysisComplete;
+        AnalysisComplete -> WaitForData;
+        AnalysisComplete -> WaitForData;
+    **};
+  end Adaptation_Analyse.impl;
+end Adaptation_Analyse;
+
+
+package sequence_functions
+public
+with Base_Types, messages;
+end sequence_functions;
+
+
+package Adaptation_Plan
+public
+with Base_Types, messages;
+  process Adaptation_Plan
+    features
+      planningCompleted: in out event port;
+      planRejected: in out event port;
+      requestPlan: in out event port;
+  end Adaptation_Plan;
+  thread Adaptation_Plan_Initialise_Thread
+  end Adaptation_Plan_Initialise_Thread;
+  thread Adaptation_Plan_WaitForSignal_Thread
+  end Adaptation_Plan_WaitForSignal_Thread;
+  thread Adaptation_Plan_MakePlan_Thread
+  end Adaptation_Plan_MakePlan_Thread;
+  thread Adaptation_Plan_PlanMade_Thread
+  end Adaptation_Plan_PlanMade_Thread;
+  thread Adaptation_Plan_WaitForVerification_Thread
+  end Adaptation_Plan_WaitForVerification_Thread;
+  thread Adaptation_Plan_Replan_Thread
+  end Adaptation_Plan_Replan_Thread;
+  thread implementation Adaptation_Plan_Initialise_Thread.impl for Adaptation_Plan_Initialise_Thread
+  end Adaptation_Plan_Initialise_Thread.impl;
+  thread implementation Adaptation_Plan_WaitForSignal_Thread.impl for Adaptation_Plan_WaitForSignal_Thread
+  end Adaptation_Plan_WaitForSignal_Thread.impl;
+  thread implementation Adaptation_Plan_MakePlan_Thread.impl for Adaptation_Plan_MakePlan_Thread
+  end Adaptation_Plan_MakePlan_Thread.impl;
+  thread implementation Adaptation_Plan_PlanMade_Thread.impl for Adaptation_Plan_PlanMade_Thread
+  end Adaptation_Plan_PlanMade_Thread.impl;
+  thread implementation Adaptation_Plan_WaitForVerification_Thread.impl for Adaptation_Plan_WaitForVerification_Thread
+  end Adaptation_Plan_WaitForVerification_Thread.impl;
+  thread implementation Adaptation_Plan_Replan_Thread.impl for Adaptation_Plan_Replan_Thread
+  end Adaptation_Plan_Replan_Thread.impl;
+  process implementation Adaptation_Plan.impl for Adaptation_Plan
+    subcomponents
+      Initialise_thread: thread Adaptation_Plan_Initialise_Thread.impl;
+      WaitForSignal_thread: thread Adaptation_Plan_WaitForSignal_Thread.impl;
+      MakePlan_thread: thread Adaptation_Plan_MakePlan_Thread.impl;
+      PlanMade_thread: thread Adaptation_Plan_PlanMade_Thread.impl;
+      WaitForVerification_thread: thread Adaptation_Plan_WaitForVerification_Thread.impl;
+      Replan_thread: thread Adaptation_Plan_Replan_Thread.impl;
+      minMaxRotation: data Base_Types::Float;
+      PI: data Base_Types::Float;
+      commands: data messages::Direction;
+    modes
+      Initialise: initial mode;
+      WaitForSignal: mode;
+      MakePlan: mode;
+      PlanMade: mode;
+      WaitForVerification: mode;
+      Replan: mode;
+    annex behaviour_specification {**
+      mode transitions
+        Initialise -> WaitForSignal;
+        WaitForSignal -[requestPlan]-> MakePlan;
+        MakePlan -> PlanMade;
+        PlanMade -> WaitForVerification;
+        WaitForVerification -[requestPlan]-> MakePlan;
+        WaitForVerification -[planRejected]-> Replan;
+        Replan -> PlanMade;
+    **};
+  end Adaptation_Plan.impl;
+end Adaptation_Plan;
+
+
+package Adaptation_Legitimate
+public
+with Base_Types, messages;
+  process Adaptation_Legitimate
+    features
+      verifyPlan: in out event port;
+      planAccepted: in out event port;
+      planRejected: in out event port;
+  end Adaptation_Legitimate;
+  thread Adaptation_Legitimate_Initialise_Thread
+  end Adaptation_Legitimate_Initialise_Thread;
+  thread Adaptation_Legitimate_WaitForSignal_Thread
+  end Adaptation_Legitimate_WaitForSignal_Thread;
+  thread Adaptation_Legitimate_PerformVerification_Thread
+  end Adaptation_Legitimate_PerformVerification_Thread;
+  thread implementation Adaptation_Legitimate_Initialise_Thread.impl for Adaptation_Legitimate_Initialise_Thread
+  end Adaptation_Legitimate_Initialise_Thread.impl;
+  thread implementation Adaptation_Legitimate_WaitForSignal_Thread.impl for Adaptation_Legitimate_WaitForSignal_Thread
+  end Adaptation_Legitimate_WaitForSignal_Thread.impl;
+  thread implementation Adaptation_Legitimate_PerformVerification_Thread.impl for Adaptation_Legitimate_PerformVerification_Thread
+  end Adaptation_Legitimate_PerformVerification_Thread.impl;
+  process implementation Adaptation_Legitimate.impl for Adaptation_Legitimate
+    subcomponents
+      Initialise_thread: thread Adaptation_Legitimate_Initialise_Thread.impl;
+      WaitForSignal_thread: thread Adaptation_Legitimate_WaitForSignal_Thread.impl;
+      PerformVerification_thread: thread Adaptation_Legitimate_PerformVerification_Thread.impl;
+      planLegitimated: data Base_Types::Boolean;
+      rotatedMask: data messages::BoolLidarMask;
+      combinedMask: data messages::BoolLidarMask;
+      i: data Base_Types::Natural;
+      n: data messages::int;
+      rotation: data Base_Types::Float;
+      rotationSteps: data Base_Types::Float;
+    modes
+      Initialise: initial mode;
+      WaitForSignal: mode;
+      PerformVerification: mode;
+    annex behaviour_specification {**
+      mode transitions
+        Initialise -> WaitForSignal;
+        WaitForSignal -[verifyPlan]-> PerformVerification;
+        PerformVerification -> WaitForSignal;
+        PerformVerification -> WaitForSignal;
+    **};
+  end Adaptation_Legitimate.impl;
+end Adaptation_Legitimate;
+
+
+package Adaptation_Execute
+public
+with Base_Types, messages;
+  process Adaptation_Execute
+    features
+      executePlan: in out event port;
+      adaptationCompleted: in out event port;
+  end Adaptation_Execute;
+  thread Adaptation_Execute_Initialise_Thread
+  end Adaptation_Execute_Initialise_Thread;
+  thread Adaptation_Execute_WaitForSignal_Thread
+  end Adaptation_Execute_WaitForSignal_Thread;
+  thread Adaptation_Execute_SendOutputs_Thread
+  end Adaptation_Execute_SendOutputs_Thread;
+  thread Adaptation_Execute_FinishAdaptation_Thread
+  end Adaptation_Execute_FinishAdaptation_Thread;
+  thread implementation Adaptation_Execute_Initialise_Thread.impl for Adaptation_Execute_Initialise_Thread
+  end Adaptation_Execute_Initialise_Thread.impl;
+  thread implementation Adaptation_Execute_WaitForSignal_Thread.impl for Adaptation_Execute_WaitForSignal_Thread
+  end Adaptation_Execute_WaitForSignal_Thread.impl;
+  thread implementation Adaptation_Execute_SendOutputs_Thread.impl for Adaptation_Execute_SendOutputs_Thread
+  end Adaptation_Execute_SendOutputs_Thread.impl;
+  thread implementation Adaptation_Execute_FinishAdaptation_Thread.impl for Adaptation_Execute_FinishAdaptation_Thread
+  end Adaptation_Execute_FinishAdaptation_Thread.impl;
+  process implementation Adaptation_Execute.impl for Adaptation_Execute
+    subcomponents
+      Initialise_thread: thread Adaptation_Execute_Initialise_Thread.impl;
+      WaitForSignal_thread: thread Adaptation_Execute_WaitForSignal_Thread.impl;
+      SendOutputs_thread: thread Adaptation_Execute_SendOutputs_Thread.impl;
+      FinishAdaptation_thread: thread Adaptation_Execute_FinishAdaptation_Thread.impl;
+    modes
+      Initialise: initial mode;
+      WaitForSignal: mode;
+      SendOutputs: mode;
+      FinishAdaptation: mode;
+    annex behaviour_specification {**
+      mode transitions
+        Initialise -> WaitForSignal;
+        WaitForSignal -[executePlan]-> SendOutputs;
+        SendOutputs -> FinishAdaptation;
+        FinishAdaptation -> WaitForSignal;
+    **};
+  end Adaptation_Execute.impl;
+end Adaptation_Execute;
+
+
+package Adaptation_Knowledge
+public
+with Base_Types, messages;
+  process Adaptation_Knowledge
+  end Adaptation_Knowledge;
+  thread Adaptation_Knowledge_Knowledge_Thread
+  end Adaptation_Knowledge_Knowledge_Thread;
+  thread implementation Adaptation_Knowledge_Knowledge_Thread.impl for Adaptation_Knowledge_Knowledge_Thread
+  end Adaptation_Knowledge_Knowledge_Thread.impl;
+  process implementation Adaptation_Knowledge.impl for Adaptation_Knowledge
+    subcomponents
+      Knowledge_thread: thread Adaptation_Knowledge_Knowledge_Thread.impl;
+    modes
+      Knowledge: initial mode;
+    annex behaviour_specification {**
+      mode transitions
+        Knowledge -[get_laserScans]-> Knowledge;
+        Knowledge -[set_laserScans]-> Knowledge;
+        Knowledge -[get_laserScans_ext]-> Knowledge;
+        Knowledge -[get_laserScans_Analyse]-> Knowledge;
+        Knowledge -[get_laserScans_Plan]-> Knowledge;
+        Knowledge -[get_laserScans_Legitimate]-> Knowledge;
+        Knowledge -[get_lidarMasks]-> Knowledge;
+        Knowledge -[set_lidarMasks]-> Knowledge;
+        Knowledge -[get_lidarMasks_ext]-> Knowledge;
+        Knowledge -[get_plannedLidarMask]-> Knowledge;
+        Knowledge -[set_plannedLidarMask]-> Knowledge;
+        Knowledge -[get_plannedLidarMask_ext]-> Knowledge;
+        Knowledge -[get_lidarMasks_Plan]-> Knowledge;
+        Knowledge -[get_plannedLidarMask_Plan]-> Knowledge;
+        Knowledge -[get_lidarMasks_Legitimate]-> Knowledge;
+        Knowledge -[get_plannedLidarMask_Legitimate]-> Knowledge;
+        Knowledge -[get_directions]-> Knowledge;
+        Knowledge -[set_directions]-> Knowledge;
+        Knowledge -[get_directions_ext]-> Knowledge;
+        Knowledge -[get_directions_Legitimate]-> Knowledge;
+        Knowledge -[get_directions_Execute]-> Knowledge;
+    **};
+  end Adaptation_Knowledge.impl;
+end Adaptation_Knowledge;

@@ -1,0 +1,31 @@
+package messages
+public
+  with Base_Types, Data_Model;
+    data Direction
+      features
+        omega: provides data access Base_Types::Float;
+        duration: provides data access Base_Types::Float;
+    end Direction;
+    data SpinConfig
+      features
+        commands: provides data access messages::Direction;
+        period: provides data access Base_Types::Float;
+    end SpinConfig;
+    data LaserScan
+      features
+        angleIncrement: provides data access Base_Types::Float;
+        ranges: provides data access Base_Types::Float;
+    end LaserScan;
+    data BoolLidarMask
+      features
+        values: provides data access Base_Types::Boolean;
+        baseAngle: provides data access Base_Types::Float;
+    end BoolLidarMask;
+    data ProbLidarMask
+      features
+        values: provides data access Base_Types::Float;
+        baseAngle: provides data access Base_Types::Float;
+    end ProbLidarMask;
+    data int
+    end int;
+end messages;
