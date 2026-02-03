@@ -1,0 +1,197 @@
+services:
+  base:
+    image: turtlebot4:base
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: base
+    # command: tmux
+    stdin_open: true
+    environment:
+      - DISPLAY=${DISPLAY}
+    network_mode: host
+  local:
+    extends: base
+    ipc: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/devuser/.Xauthority
+      - /dev/shm:/dev/shm
+  dev:
+    extends: local
+    image: turtlebot4:dev
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: dev
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=devuser
+    user: devuser
+    command: sleep infinity
+  cloud:
+    extends: base
+    image: turtlebot4:deploy
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: deploy
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=devuser
+    user: devuser
+    command: sleep infinity
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/opt/fastdds_no_shared_memory.xml
+  devnogpu:
+    extends: dev
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+  devmesa:
+    extends: dev
+    volumes:
+      - /dev/dri:/dev/dri
+  devnvidia:
+    extends: dev
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+  cloudnogpu:
+    extends: cloud
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+  cloudmesa:
+    extends: cloud
+    volumes:
+      - /dev/dri:/dev/dri
+  cloudnvidia:
+    extends: cloud
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+  simnogpu:
+    extends: devnogpu
+    command: ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py world:=maze slam:=true nav2:=true rviz:=true
+  simmesa:
+    extends: devmesa
+    command: ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py world:=maze slam:=true nav2:=true rviz:=true
+  simnvidia:
+    extends: devnvidia
+    command: ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py world:=maze slam:=true nav2:=true rviz:=true
+  deploy:
+    extends: dev
+    image: turtlebot4:deploy
+    build:
+      context: ..
+      target: deploy
+      dockerfile: docker/Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=devuser
+    user: devuser
+    command: sleep infinity
+  deploynogpu:
+    extends: deploy
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+  deploymesa:
+    extends: deploy
+    volumes:
+      - /dev/dri:/dev/dri
+  deploynvidia:
+    extends: deploy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+  simdeploynogputb4:
+    extends: deploynogpu
+    command: ros2 launch demo_bringup sim_demo_tb4.launch.py
+  simdeploymesatb4:
+    extends: deploymesa
+    command: ros2 launch demo_bringup sim_demo_tb4.launch.py
+  simdeploynvidiatb4:
+    extends: deploynvidia
+    command: ros2 launch demo_bringup sim_demo_tb4.launch.py
+  simdeploymesatb3:
+    extends: deploymesa
+    command: ros2 launch demo_bringup sim_demo_tb3.launch.py
+  simdeploynvidiatb3:
+    extends: deploynvidia
+    command: ros2 launch demo_bringup sim_demo_tb3.launch.py
+  simdeploynogputb3:
+    extends: deploynogpu
+    command: ros2 launch demo_bringup sim_demo_tb3.launch.py
+
+  deployheadlessnvidia:
+    extends: cloudnvidia
+    image: turtlebot4:deploy
+    build:
+      context: ..
+      target: deploy
+      dockerfile: docker/Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=devuser
+    user: devuser
+
+  simdeploynvidiaheadlesstb3:
+    extends: deployheadlessnvidia
+    command: ros2 launch demo_bringup sim_headless_demo_tb3.launch.py
+
+  simdeployheadlessnogputb3:
+    extends: deploynvidia
+    command: ros2 launch demo_bringup sim_headless_demo_tb3.launch.py
+    image: thomasdwright/turtlebot-3-headless-nogpu:latest
+
+  simcloudnogputb3:
+    extends: cloudnogpu
+    command: ros2 launch demo_bringup sim_headless_demo_tb3.launch.py
+    image: thomasdwright/turtlebot-3-cloud-nogpu:latest
+
+  simcloudnvidiatb3:
+    extends: cloudnvidia
+    command: ros2 launch demo_bringup sim_headless_demo_tb3.launch.py
+    image: thomasdwright/turtlebot-3-cloud-nvidia:latest
+
+  simdeployheadlessnvidiatb3:
+    extends: deploynvidia
+    command: ros2 launch demo_bringup sim_headless_demo_tb3.launch.py
+    image: thomasdwright/turtlebot-3-headless-nvidia:latest
+
+  rvizlivenvidia:
+    extends: deploynvidia
+    command: ros2 launch demo_bringup real_demo_tb4_rviz_view.launch.py
+  rvizlivemesa:
+    extends: deploymesa
+    command: ros2 launch demo_bringup real_demo_tb4_rviz_view.launch.py
+  rvizlivenogpu:
+    extends: deploynogpu
+    command: ros2 launch demo_bringup real_demo_tb4_rviz_view.launch.py
+
+volumes:
+  rosuserdata:
+  ignitionuserdata:
+  rosdata:
+  ignitiondata:

@@ -1,0 +1,172 @@
+# TurtleBot 3 Waypoint Navigator - Simplified Single Service
+#
+# Simple service that connects to an already-running Gazebo/ROS 2 simulation
+# and sends movement commands via ROS 2 topics.
+#
+# Prerequisites:
+#   - Gazebo simulation running with TurtleBot 3
+#   - ROS 2 environment available
+#
+# Usage:
+#   # Basic usage (from project root)
+#   docker compose -f docker/docker-compose.waypoint-navigator-simple.yaml up waypoint_navigator
+#
+#   # With custom parameters
+#   WAYPOINT_SPEED=0.15 WAYPOINT_POSITION_TOLERANCE=0.05 WAYPOINT_ANGLE_TOLERANCE=0.05 WAYPOINT_REPETITIONS=1 \
+#   docker compose -f docker/docker-compose.waypoint-navigator-simple.yaml up waypoint_navigator
+#
+#   # Fast exploration
+#   WAYPOINT_SPEED=0.4 WAYPOINT_REPETITIONS=0 \
+#   docker compose -f docker/docker-compose.waypoint-navigator-simple.yaml up waypoint_navigator
+#
+#   # Stop the service
+#   docker compose -f docker/docker-compose.waypoint-navigator-simple.yaml down
+
+services:
+  waypoint_navigator:
+    # Use the devnogpu image from turtlebotrossim which has ROS 2 and all dependencies
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+
+    container_name: waypoint_navigator
+
+    # Use host network to connect directly to ROS 2 environment
+    network_mode: host
+
+    # Use host IPC for shared memory communication
+    ipc: host
+
+    # Run as root for build, will drop to user for execution
+    user: root
+
+    # Environment variables
+    environment:
+      # ROS 2 Configuration
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - ROS_LOCALHOST_ONLY=0
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/opt/fastdds_no_shared_memory.xml
+      - TURTLEBOT3_MODEL=waffle
+
+      # Waypoint Navigator Parameters
+      - WAYPOINT_SPEED=${WAYPOINT_SPEED:-0.2}
+      - WAYPOINT_ANGULAR_SPEED=${WAYPOINT_ANGULAR_SPEED:-0.5}
+      - WAYPOINT_REPETITIONS=${WAYPOINT_REPETITIONS:-1}
+      - WAYPOINT_PATTERN=${WAYPOINT_PATTERN:-default}
+      - WAYPOINT_POSITION_TOLERANCE=${WAYPOINT_POSITION_TOLERANCE:-0.1}
+      - WAYPOINT_ANGLE_TOLERANCE=${WAYPOINT_ANGLE_TOLERANCE:-0.1}
+      - WAYPOINT_NAMESPACE=${WAYPOINT_NAMESPACE:-}
+
+    # Mount workspace
+    volumes:
+      - ../turtlebotrossim:/ws:rw
+      - ./scripts:/ws/src/turtlebot3_waypoint_navigator/docker/scripts:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev/shm:/dev/shm
+
+    # Main command - runs waypoint navigator with proper environment setup
+    command:
+      - /bin/bash
+      - -c
+      - |
+        set -e
+
+        echo "=========================================="
+        echo "TurtleBot 3 Waypoint Navigator"
+        echo "=========================================="
+        echo "Speed: $WAYPOINT_SPEED m/s"
+        echo "Angular Speed: $WAYPOINT_ANGULAR_SPEED rad/s"
+        echo "Repetitions: $WAYPOINT_REPETITIONS"
+        echo "Pattern: $WAYPOINT_PATTERN"
+        echo "Position Tolerance: $WAYPOINT_POSITION_TOLERANCE m"
+        echo "Angle Tolerance: $WAYPOINT_ANGLE_TOLERANCE rad"
+        [ -n "$WAYPOINT_NAMESPACE" ] && echo "Namespace: $WAYPOINT_NAMESPACE"
+        echo "ROS Domain ID: $ROS_DOMAIN_ID"
+        echo "=========================================="
+        echo ""
+
+        echo "Sourcing ROS 2 environment..."
+        if [ -f /opt/ros/humble/setup.sh ]; then
+          . /opt/ros/humble/setup.sh
+          echo "✓ ROS 2 environment sourced"
+        else
+          echo "✗ ERROR: ROS 2 setup not found at /opt/ros/humble/setup.sh"
+          exit 1
+        fi
+        echo ""
+
+        echo "Checking workspace..."
+        if [ -f /ws/install/setup.sh ]; then
+          echo "Sourcing workspace at /ws..."
+          . /ws/install/setup.sh
+          echo "✓ Workspace sourced successfully"
+        else
+          echo "⚠ WARNING: Workspace setup not found at /ws/install/setup.sh"
+
+          if [ ! -d /ws/src/turtlebot3_waypoint_navigator ]; then
+            echo "✗ ERROR: turtlebot3_waypoint_navigator source not found in /ws/src"
+            exit 1
+          fi
+
+          echo "Building workspace inside container..."
+          cd /ws
+
+          # Run colcon build
+          echo "Running: colcon build --packages-select turtlebot3_waypoint_navigator"
+          colcon build --packages-select turtlebot3_waypoint_navigator
+
+          if [ ! -f /ws/install/setup.sh ]; then
+            echo "✗ ERROR: Workspace build failed - setup.sh not created"
+            exit 1
+          fi
+
+          . /ws/install/setup.sh
+          echo "✓ Workspace built and sourced successfully"
+        fi
+        echo ""
+
+        echo "Package installation verified (skipping explicit check)"
+        echo ""
+
+        echo "Waiting for ROS 2 environment to be ready..."
+        count=0
+        max_attempts=10
+        ros2_ready=0
+        while [ $$count -lt $$max_attempts ]; do
+          if ros2 node list > /dev/null 2>&1; then
+            echo "✓ ROS 2 environment is ready!"
+            ros2_ready=1
+            break
+          fi
+          echo "  Waiting for ROS 2... ($$count/$$max_attempts)"
+          sleep 1
+          count=$$((count + 1))
+        done
+
+        if [ $$ros2_ready -eq 0 ]; then
+          echo "⚠ WARNING: ROS 2 environment not ready (Gazebo may not be running)"
+          echo "  Continuing anyway - topics may not be available"
+        fi
+        echo ""
+
+        echo "Starting waypoint navigation..."
+        echo "============================================"
+        echo ""
+
+        # Final source of workspace before running
+        if [ -f /ws/install/setup.sh ]; then
+          . /ws/install/setup.sh
+        fi
+
+        # Use wrapper script to run navigator
+        echo "Starting navigator..."
+        exec python3 /ws/src/turtlebot3_waypoint_navigator/docker/scripts/run_waypoint_navigator_nav2.py
+
+    stdin_open: true
+    tty: true
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,528 @@
+# TurtleBot 3 Waypoint Navigator - Docker Compose Service Definitions
+#
+# This file defines Docker Compose services for common waypoint navigation use cases.
+# Include this file in your main docker-compose.yaml or use standalone with:
+#   docker-compose -f docker-compose.waypoint-navigator.yaml up <service-name>
+#
+# Services defined:
+# - waypoint_nav2_single_robot: Full Nav2-based navigation (production)
+# - waypoint_twist_single_robot: Lightweight Twist-based navigation (testing)
+# - waypoint_twist_figure_eight: Figure-eight pattern exploration
+# - waypoint_twist_fast_exploration: High-speed area coverage
+# - waypoint_twist_precision_mode: Low-speed precise navigation
+# - waypoint_nav2_multi_robot_coordinator: Multi-robot patrol orchestrator
+# - waypoint_twist_multi_robot_1: First robot in multi-robot setup
+# - waypoint_twist_multi_robot_2: Second robot in multi-robot setup
+# - waypoint_security_patrol: Simulated security patrol route
+# - waypoint_warehouse_scanning: Warehouse inventory scanning
+
+version: "3.8"
+
+services:
+  # ============================================================================
+  # Use Case 1: Single Robot - Full Nav2-Based Navigation (Production)
+  # ============================================================================
+  # Production-grade navigation with path planning and obstacle avoidance
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_nav2_single_robot
+  waypoint_nav2_single_robot:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_nav2_single_robot
+    depends_on:
+      - gazebo_turtlebot3_world
+      - nav2_stack
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_nav2
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 2: Single Robot - Lightweight Twist-Based Navigation (Testing)
+  # ============================================================================
+  # Simple velocity command-based navigation - no Nav2 required
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_single_robot
+  waypoint_twist_single_robot:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_twist_single_robot
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p speed:=0.2 \
+        -p repetitions:=1 \
+        -p pattern:='default' \
+        -p position_tolerance:=0.1 \
+        -p angle_tolerance:=0.1
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 3: Lightweight Testing - Figure-Eight Pattern
+  # ============================================================================
+  # Continuous figure-eight motion for smooth area surveillance
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_figure_eight
+  waypoint_twist_figure_eight:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_twist_figure_eight
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p speed:=0.25 \
+        -p repetitions:=3 \
+        -p pattern:='figure_eight' \
+        -p position_tolerance:=0.1 \
+        -p angle_tolerance:=0.1
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 4: Fast Exploration Mode
+  # ============================================================================
+  # High-speed area coverage with relaxed tolerances
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_fast_exploration
+  waypoint_twist_fast_exploration:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_twist_fast_exploration
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p speed:=0.4 \
+        -p repetitions:=5 \
+        -p pattern:='default' \
+        -p position_tolerance:=0.2 \
+        -p angle_tolerance:=0.2
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 5: Precision Navigation Mode
+  # ============================================================================
+  # Slow, accurate navigation for precise positioning tasks
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_precision_mode
+  waypoint_twist_precision_mode:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_twist_precision_mode
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p speed:=0.1 \
+        -p repetitions:=1 \
+        -p pattern:='default' \
+        -p position_tolerance:=0.05 \
+        -p angle_tolerance:=0.05
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 6: Multi-Robot Coordinator (Orchestrator)
+  # ============================================================================
+  # Central monitoring node for multi-robot coordination
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_nav2_multi_robot_coordinator
+  waypoint_nav2_multi_robot_coordinator:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_nav2_multi_robot_coordinator
+    depends_on:
+      - gazebo_turtlebot3_world
+      - nav2_stack
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      echo 'Multi-Robot Coordinator started' &&
+      echo 'Monitoring robots: /tb3_0, /tb3_1' &&
+      sleep infinity
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 7: Multi-Robot Setup - Robot 1
+  # ============================================================================
+  # First robot in multi-robot patrol scenario
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_multi_robot_1
+  waypoint_twist_multi_robot_1:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_twist_multi_robot_1
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p namespace:='/tb3_0' \
+        -p speed:=0.2 \
+        -p repetitions:=0 \
+        -p pattern:='default'
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 8: Multi-Robot Setup - Robot 2
+  # ============================================================================
+  # Second robot in multi-robot patrol scenario (offset pattern)
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_multi_robot_2
+  waypoint_twist_multi_robot_2:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_twist_multi_robot_2
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p namespace:='/tb3_1' \
+        -p speed:=0.2 \
+        -p repetitions:=0 \
+        -p pattern:='figure_eight'
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=1
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 9: Security Patrol Route
+  # ============================================================================
+  # Simulated security patrol with Nav2 (pauses at waypoints)
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_security_patrol
+  waypoint_security_patrol:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_security_patrol
+    depends_on:
+      - gazebo_turtlebot3_world
+      - nav2_stack
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_nav2 \
+        --ros-args \
+        -p max_loops:=0 \
+        -p pause_at_waypoint:=2.0
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Use Case 10: Warehouse Scanning
+  # ============================================================================
+  # Slow, precise navigation for warehouse inventory scanning
+  # Launch: docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_warehouse_scanning
+  waypoint_warehouse_scanning:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: waypoint_warehouse_scanning
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      source /ws/install/setup.bash &&
+      ros2 run turtlebot3_waypoint_navigator waypoint_navigator_twist \
+        --ros-args \
+        -p speed:=0.15 \
+        -p repetitions:=1 \
+        -p pattern:='default' \
+        -p position_tolerance:=0.05 \
+        -p angle_tolerance:=0.05
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Supporting Services
+  # ============================================================================
+
+  # Gazebo Simulation Environment
+  gazebo_turtlebot3_world:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      export TURTLEBOT3_MODEL=waffle &&
+      ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Navigation2 Stack
+  nav2_stack:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: nav2_stack
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      export TURTLEBOT3_MODEL=waffle &&
+      ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=true \
+        map:=$(ros2 pkg prefix turtlebot3_navigation2)/share/turtlebot3_navigation2/maps/map.yaml
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ${PWD}:/ws:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # RViz Visualization (Optional)
+  rviz_monitor:
+    extends:
+      service: devnogpu
+      file: ../turtlebotrossim/docker/docker-compose.yaml
+    container_name: rviz_monitor
+    depends_on:
+      - gazebo_turtlebot3_world
+    command: >
+      bash -c "
+      source /opt/ros/humble/setup.bash &&
+      export TURTLEBOT3_MODEL=waffle &&
+      rviz2 -c $(ros2 pkg prefix turtlebot3_navigation2)/share/turtlebot3_navigation2/rviz/nav2_default_view.rviz
+      "
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=0
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - ${PWD}:/ws:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ros_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  ros_network:
+    driver: bridge
+# ============================================================================
+# Usage Examples:
+# ============================================================================
+#
+# 1. Single Robot - Full Nav2 (Production):
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_nav2_single_robot
+#
+# 2. Single Robot - Twist (Testing):
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_single_robot
+#
+# 3. Figure-Eight Pattern:
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_figure_eight
+#
+# 4. Fast Exploration:
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_fast_exploration
+#
+# 5. Precision Mode:
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_twist_precision_mode
+#
+# 6. Multi-Robot Setup (Start all three):
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up \
+#      waypoint_nav2_multi_robot_coordinator \
+#      waypoint_twist_multi_robot_1 \
+#      waypoint_twist_multi_robot_2
+#
+# 7. Security Patrol:
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_security_patrol
+#
+# 8. Warehouse Scanning:
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up waypoint_warehouse_scanning
+#
+# 9. Full Stack (Gazebo + Nav2 + Navigator):
+#    docker-compose -f docker-compose.waypoint-navigator.yaml up \
+#      gazebo_turtlebot3_world \
+#      nav2_stack \
+#      waypoint_nav2_single_robot \
+#      rviz_monitor
+#
+# 10. Tear Down:
+#     docker-compose -f docker-compose.waypoint-navigator.yaml down
+#
+# 11. View Logs:
+#     docker-compose -f docker-compose.waypoint-navigator.yaml logs -f waypoint_twist_single_robot
+#
+# 12. Execute Commands in Running Container:
+#     docker-compose -f docker-compose.waypoint-navigator.yaml exec waypoint_twist_single_robot bash
+#
+# ============================================================================

@@ -1,0 +1,191 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    networks:
+      - rap_network
+  # main-app:
+  #   build: .
+  #   container_name: main-app
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   environment:
+  #     - REDIS_HOST=redis
+  #   restart: unless-stopped
+  #   networks:
+  #     - rap_network
+
+  simulator:
+    build:
+      context: ./Simulator
+      dockerfile: Dockerfile
+    container_name: turtlebot_simulator
+    ports:
+      - "8051:8051"
+    environment:
+      - DASH_HOST=0.0.0.0
+      - DASH_PORT=8051
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - rap_network
+
+  dashboard:
+    build:
+      context: ./Dashboard
+      dockerfile: Dockerfile
+    container_name: dashboard
+    ports:
+      - "8050:8050"
+    environment:
+      - DASH_HOST=0.0.0.0
+      - DASH_PORT=8050
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - rap_network
+
+  orchestrator:
+    build:
+      context: ./Orchestrator
+      args:
+        - DOCKER_GID=${DOCKER_GID:-142}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/repo # Mount whole repo so orchestrator can access Dockerfiles
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST=redis
+      - COMPOSE_NAME=PC1
+      - NODES=Analysis,Plan,Execute,Monitor,Legitimate,Trustworthiness
+    networks:
+      - rap_network
+
+    restart: unless-stopped
+
+  monitor:
+    build: ./Nodes/Monitor
+    container_name: Monitor
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    restart: unless-stopped
+    networks:
+      - rap_network
+
+  analysis:
+    build: ./Nodes/Analysis
+    container_name: Analysis
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    restart: unless-stopped
+    networks:
+      - rap_network
+  plan:
+    build: ./Nodes/Plan
+    container_name: Plan
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    restart: unless-stopped
+    networks:
+      - rap_network
+
+  execute:
+    build: ./Nodes/Execute
+    container_name: Execute
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    restart: unless-stopped
+    networks:
+      - rap_network
+
+  legitimate:
+    build: ./Nodes/Legitimate
+    container_name: Legitimate
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    restart: unless-stopped
+    networks:
+      - rap_network
+
+  trustworthiness:
+    build: ./Nodes/Trustworthiness
+    container_name: Trustworthiness
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    restart: unless-stopped
+    networks:
+      - rap_network
+
+  TC:
+    image: trustworthiness-checker:dev
+    container_name: trustworthiness-checker
+    build:
+      context: ./TrustworthinessChecker
+      dockerfile: docker/Dockerfile
+      target: dev
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USERNAME=${USERNAME:-devuser}
+        - DOCKER_GID=${DOCKER_GID:-142}
+    depends_on:
+      # - emqx
+      - redis
+    user: ${USERNAME:-devuser}
+    working_dir: /ws
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - DISPLAY=${DISPLAY}
+      - PATH=/home/${USERNAME:-devuser}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - CARGO_TARGET_DIR=/tmp/cargo-target
+    volumes:
+      - ./TrustworthinessChecker:/ws
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/${USERNAME:-devuser}/.Xauthority
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: /bin/bash -c "source ~/.bashrc && cd /ws && cargo run -- examples/maple_simple_single_topic.lola --input-redis-topics stage --output-redis-topics m a p l e maple --redis-host redis"
+    restart: unless-stopped
+    networks:
+      - rap_network
+
+networks:
+  rap_network:
+    driver: bridge

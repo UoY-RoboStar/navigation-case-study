@@ -1,0 +1,330 @@
+# Docker Compose for TurtleBot3 Waypoint Navigator with Headless Simulation
+#
+# This configuration runs:
+# 1. Headless Gazebo simulation with Nav2 (NVIDIA GPU accelerated)
+# 2. Waypoint Navigator node
+#
+# Usage:
+#   docker-compose -f docker/docker-compose.waypoint-navigator.yaml up
+#
+# Or for specific GPU configuration:
+#   docker-compose -f docker/docker-compose.waypoint-navigator.yaml up sim-nvidia waypoint-navigator-nvidia
+#
+# Services:
+#   - sim-nvidia: Headless simulation with NVIDIA GPU
+#   - sim-nogpu: Headless simulation without GPU (software rendering)
+#   - waypoint-navigator-nvidia: Waypoint navigator (requires simulation)
+#   - waypoint-navigator-nogpu: Waypoint navigator without GPU
+#   - rviz-nvidia: Optional RViz visualization
+
+version: "3.8"
+
+services:
+  # Base configuration for all services
+  base:
+    image: turtlebot4:base
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: base
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    volumes:
+      - ../src:/ws/src:rw
+      - workspace_build:/ws/build
+      - workspace_install:/ws/install
+      - /dev/shm:/dev/shm
+
+  # Deploy image base (includes waypoint navigator package)
+  deploy:
+    extends: base
+    image: turtlebot4:deploy
+    build:
+      context: ..
+      target: deploy
+      dockerfile: docker/Dockerfile
+      args:
+        - UID=${USER_ID:-1000}
+        - GID=${USER_ID:-1000}
+        - USERNAME=devuser
+    user: devuser
+
+  # ============================================================================
+  # HEADLESS SIMULATION SERVICES (No Display/RViz)
+  # ============================================================================
+
+  # Headless simulation with NVIDIA GPU acceleration
+  sim-nvidia:
+    extends: deploy
+    container_name: tb3-sim-headless-nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu, compute, utility]
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+      - TURTLEBOT3_MODEL=waffle
+      - GAZEBO_MODEL_PATH=/opt/ros/humble/share/turtlebot3_gazebo/models:/usr/share/gazebo-11/models
+      - GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11
+      - GAZEBO_MODEL_DATABASE_URI=http://localhost:11345
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - DISPLAY=:99
+      - QT_QPA_PLATFORM=offscreen
+    command: >
+      bash -c "Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset &
+               sleep 3 &&
+               export DISPLAY=:99 &&
+               source /opt/ros/humble/setup.bash &&
+               source /ws/install/setup.bash &&
+               ros2 launch demo_bringup sim_headless_demo_tb3.launch.py"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "source /opt/ros/humble/setup.bash && ros2 topic list && ros2 service list | grep -q /spawn_entity",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
+  # Headless simulation without GPU (software rendering)
+  sim-nogpu:
+    extends: deploy
+    container_name: tb3-sim-headless-nogpu
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - TURTLEBOT3_MODEL=waffle
+      - GAZEBO_MODEL_PATH=/opt/ros/humble/share/turtlebot3_gazebo/models:/usr/share/gazebo-11/models
+      - GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11
+      - GAZEBO_MODEL_DATABASE_URI=http://localhost:11345
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - DISPLAY=
+      - QT_QPA_PLATFORM=offscreen
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+               source /ws/install/setup.bash &&
+               ros2 launch demo_bringup sim_headless_demo_tb3.launch.py"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "source /opt/ros/humble/setup.bash && ros2 topic list && ros2 service list | grep -q /spawn_entity",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
+  # Headless simulation with Mesa (Intel/AMD GPU)
+  sim-mesa:
+    extends: deploy
+    container_name: tb3-sim-headless-mesa
+    volumes:
+      - /dev/dri:/dev/dri
+      - ../src:/ws/src:rw
+      - workspace_build:/ws/build
+      - workspace_install:/ws/install
+      - /dev/shm:/dev/shm
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - GAZEBO_MODEL_PATH=/opt/ros/humble/share/turtlebot3_gazebo/models:/usr/share/gazebo-11/models
+      - GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11
+      - GAZEBO_MODEL_DATABASE_URI=http://localhost:11345
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - DISPLAY=:99
+      - QT_QPA_PLATFORM=offscreen
+    command: >
+      bash -c "Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset &
+               sleep 3 &&
+               export DISPLAY=:99 &&
+               source /opt/ros/humble/setup.bash &&
+               source /ws/install/setup.bash &&
+               ros2 launch demo_bringup sim_headless_demo_tb3.launch.py"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "source /opt/ros/humble/setup.bash && ros2 topic list && ros2 service list | grep -q /spawn_entity",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
+  # ============================================================================
+  # WAYPOINT NAVIGATOR SERVICES
+  # ============================================================================
+
+  # Waypoint Navigator (NVIDIA version)
+  waypoint-navigator-nvidia:
+    extends: deploy
+    container_name: tb3-waypoint-navigator
+    depends_on:
+      sim-nvidia:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - PYTHONUNBUFFERED=1
+    command: /opt/wait_for_amcl.sh
+    restart: on-failure
+
+  # Waypoint Navigator (No GPU version)
+  waypoint-navigator-nogpu:
+    extends: deploy
+    container_name: tb3-waypoint-navigator
+    depends_on:
+      sim-nogpu:
+        condition: service_healthy
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - PYTHONUNBUFFERED=1
+    command: /opt/wait_for_amcl.sh
+    restart: on-failure
+
+  # Waypoint Navigator (Mesa version)
+  waypoint-navigator-mesa:
+    extends: deploy
+    container_name: tb3-waypoint-navigator
+    depends_on:
+      sim-mesa:
+        condition: service_healthy
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - PYTHONUNBUFFERED=1
+    command: /opt/wait_for_amcl.sh
+    restart: on-failure
+
+  # ============================================================================
+  # OPTIONAL VISUALIZATION SERVICES
+  # ============================================================================
+
+  # RViz for visualization (NVIDIA)
+  rviz-nvidia:
+    extends: deploy
+    container_name: tb3-rviz
+    depends_on:
+      - sim-nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - DISPLAY=${DISPLAY}
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/devuser/.Xauthority:ro
+      - ../src:/ws/src:rw
+      - workspace_install:/ws/install
+      - /dev/shm:/dev/shm
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+               source /ws/install/setup.bash &&
+               rviz2"
+    profiles:
+      - visualization
+
+  # RViz for visualization (No GPU)
+  rviz-nogpu:
+    extends: deploy
+    container_name: tb3-rviz
+    depends_on:
+      - sim-nogpu
+    environment:
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - DISPLAY=${DISPLAY}
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/devuser/.Xauthority:ro
+      - ../src:/ws/src:rw
+      - workspace_install:/ws/install
+      - /dev/shm:/dev/shm
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+               source /ws/install/setup.bash &&
+               rviz2"
+    profiles:
+      - visualization
+
+  # ============================================================================
+  # MONITORING AND DEBUGGING SERVICES
+  # ============================================================================
+
+  # Monitor service - logs topic activity
+  monitor:
+    extends: deploy
+    container_name: tb3-monitor
+    depends_on:
+      - sim-nvidia
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+               echo '=== ROS 2 Topics ===' &&
+               ros2 topic list &&
+               echo '' &&
+               echo '=== ROS 2 Nodes ===' &&
+               ros2 node list &&
+               echo '' &&
+               echo '=== Monitoring /amcl_pose ===' &&
+               ros2 topic hz /amcl_pose"
+    profiles:
+      - debug
+
+  # Interactive shell for debugging
+  debug-shell:
+    extends: deploy
+    container_name: tb3-debug-shell
+    stdin_open: true
+    tty: true
+    environment:
+      - TURTLEBOT3_MODEL=waffle
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+    command: bash
+    profiles:
+      - debug
+
+# ============================================================================
+# VOLUMES (for persistence across restarts)
+# ============================================================================
+volumes:
+  workspace_src:
+  workspace_build:
+  workspace_install:

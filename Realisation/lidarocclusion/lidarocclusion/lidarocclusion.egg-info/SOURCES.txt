@@ -1,0 +1,10 @@
+__init__.py
+masks.py
+setup.py
+sliding_lidar_masks.py
+lidarocclusion.egg-info/PKG-INFO
+lidarocclusion.egg-info/SOURCES.txt
+lidarocclusion.egg-info/dependency_links.txt
+lidarocclusion.egg-info/top_level.txt
+tests/test_masks.py
+tests/test_sliding_masks.py

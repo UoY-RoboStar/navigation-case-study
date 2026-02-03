@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: lidarocclusion
+Version: 0.0.1
+Summary: a pip-installable package example
+Home-page: https://github.com/twright/Lidar-Occlusion
+Author: Thomas Wright
+Author-email: thomas.wright@ece.au.dk
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: summary

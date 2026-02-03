@@ -1,0 +1,11 @@
+setup.py
+lidarocclusion/__init__.py
+lidarocclusion/masks.py
+lidarocclusion/sliding_lidar_masks.py
+lidarocclusion.egg-info/PKG-INFO
+lidarocclusion.egg-info/SOURCES.txt
+lidarocclusion.egg-info/dependency_links.txt
+lidarocclusion.egg-info/top_level.txt
+lidarocclusion/tests/__init__.py
+lidarocclusion/tests/test_masks.py
+lidarocclusion/tests/test_sliding_masks.py
